@@ -1,928 +1,467 @@
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Price Tools — Каталог скриптов</title>
-
   <style>
-
     :root {
-
       /* Теплая темная палитра */
-
       --bg-main: #191615;
-
       --bg-surface: #24201e;
-
       --bg-surface-soft: #2d2825;
-
       --border-warm: #3d3632;
-
       --border-focus: #e09462;
-
       
-
       /* Текст: сливочный и теплый бежевый */
-
       --text-title: #fcf6f0;
-
       --text-main: #e8ded4;
-
       --text-muted: #ad9f94;
 
-
-
       /* Уютные акцентные цвета */
-
       --accent-warm: #e08a55;
-
       --accent-warm-hover: #f29a65;
-
       --accent-badge-bg: #352a24;
-
       --accent-badge-text: #f6b388;
-
       
-
       --radius-sm: 8px;
-
       --radius-md: 14px;
-
       --radius-lg: 18px;
-
       --shadow-warm: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
-
     }
-
-
 
     * {
-
       box-sizing: border-box;
-
       margin: 0;
-
       padding: 0;
-
     }
-
-
 
     body {
-
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
       background-color: var(--bg-main);
-
       color: var(--text-main);
-
       line-height: 1.55;
-
       padding: 40px 16px 60px;
-
     }
-
-
 
     .container {
-
       max-width: 960px;
-
       margin: 0 auto;
-
     }
-
-
 
     /* Шапка сайта */
-
     header {
-
       margin-bottom: 28px;
-
       text-align: center;
-
     }
-
-
 
     .header-badge {
-
       display: inline-block;
-
       font-size: 13px;
-
       font-weight: 500;
-
       padding: 4px 12px;
-
       border-radius: 20px;
-
       background: var(--accent-badge-bg);
-
       color: var(--accent-badge-text);
-
       border: 1px solid rgba(224, 138, 85, 0.25);
-
       margin-bottom: 12px;
-
     }
-
-
 
     header h1 {
-
       font-size: 30px;
-
       font-weight: 700;
-
       color: var(--text-title);
-
       margin-bottom: 8px;
-
       letter-spacing: -0.02em;
-
     }
-
-
 
     header p {
-
       font-size: 16px;
-
       color: var(--text-muted);
-
     }
-
-
 
     /* Блок инструкции */
-
     .instruction-card {
-
       background: var(--bg-surface);
-
       border: 1px solid var(--border-warm);
-
       border-radius: var(--radius-lg);
-
       padding: 22px 26px;
-
       margin-bottom: 28px;
-
       box-shadow: var(--shadow-warm);
-
     }
-
-
 
     .instruction-title {
-
       font-size: 15px;
-
       font-weight: 600;
-
       color: var(--accent-badge-text);
-
       display: flex;
-
       align-items: center;
-
       gap: 8px;
-
       margin-bottom: 14px;
-
       text-transform: uppercase;
-
       letter-spacing: 0.05em;
-
     }
-
-
 
     .instruction-grid {
-
       list-style: none;
-
       display: grid;
-
       grid-template-columns: 1fr;
-
       gap: 12px;
-
     }
-
-
 
     @media (min-width: 768px) {
-
       .instruction-grid {
-
         grid-template-columns: repeat(3, 1fr);
-
         gap: 16px;
-
       }
-
     }
-
-
 
     .step-item {
-
       display: flex;
-
       gap: 12px;
-
       align-items: flex-start;
-
       background: var(--bg-surface-soft);
-
       border: 1px solid var(--border-warm);
-
       padding: 14px;
-
       border-radius: var(--radius-md);
-
       font-size: 14px;
-
       color: var(--text-main);
-
     }
-
-
 
     .step-pill {
-
       background: var(--accent-warm);
-
       color: #1a1412;
-
       font-weight: 700;
-
       font-size: 12px;
-
       width: 22px;
-
       height: 22px;
-
       border-radius: 50%;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       flex-shrink: 0;
-
       margin-top: 1px;
-
     }
-
-
 
     .step-item a {
-
       color: var(--accent-badge-text);
-
       text-decoration: underline;
-
       text-underline-offset: 3px;
-
     }
-
-
 
     /* Поиск */
-
     .search-section {
-
       position: sticky;
-
       top: 16px;
-
       z-index: 20;
-
       margin-bottom: 24px;
-
       display: flex;
-
       flex-direction: column;
-
       gap: 8px;
-
     }
-
-
 
     .search-box {
-
       position: relative;
-
       display: flex;
-
       align-items: center;
-
     }
-
-
 
     .search-icon {
-
       position: absolute;
-
       left: 18px;
-
       width: 20px;
-
       height: 20px;
-
       color: var(--text-muted);
-
       pointer-events: none;
-
     }
-
-
 
     .search-input {
-
       width: 100%;
-
       background: var(--bg-surface);
-
       border: 1px solid var(--border-warm);
-
       color: var(--text-title);
-
       font-size: 15px;
-
       padding: 14px 44px 14px 50px;
-
       border-radius: var(--radius-md);
-
       box-shadow: var(--shadow-warm);
-
       outline: none;
-
       transition: border-color 0.2s, box-shadow 0.2s;
-
     }
-
-
 
     .search-input:focus {
-
       border-color: var(--border-focus);
-
       box-shadow: 0 0 0 3px rgba(224, 138, 85, 0.2);
-
     }
-
-
 
     .search-input::placeholder {
-
       color: var(--text-muted);
-
     }
-
-
 
     .btn-clear {
-
       position: absolute;
-
       right: 16px;
-
       background: var(--border-warm);
-
       border: none;
-
       color: var(--text-muted);
-
       width: 22px;
-
       height: 22px;
-
       border-radius: 50%;
-
       cursor: pointer;
-
       display: none;
-
       align-items: center;
-
       justify-content: center;
-
       font-size: 12px;
-
     }
-
-
 
     .btn-clear:hover {
-
       background: var(--accent-warm);
-
       color: #191615;
-
     }
-
-
 
     .counter {
-
       font-size: 13px;
-
       color: var(--text-muted);
-
       padding-left: 6px;
-
     }
-
-
 
     /* Сетка карточек */
-
     .scripts-list {
-
       display: grid;
-
       grid-template-columns: 1fr;
-
       gap: 18px;
-
     }
-
-
 
     @media (min-width: 680px) {
-
       .scripts-list {
-
         grid-template-columns: repeat(2, 1fr);
-
       }
-
     }
-
-
 
     .script-card {
-
       background: var(--bg-surface);
-
       border: 1px solid var(--border-warm);
-
       border-radius: var(--radius-lg);
-
       padding: 22px;
-
       display: flex;
-
       flex-direction: column;
-
       justify-content: space-between;
-
       box-shadow: var(--shadow-warm);
-
       transition: transform 0.2s ease, border-color 0.2s ease;
-
     }
-
-
 
     .script-card:hover {
-
       transform: translateY(-2px);
-
       border-color: rgba(224, 138, 85, 0.5);
-
     }
-
-
 
     .card-top {
-
       margin-bottom: 12px;
-
     }
-
-
 
     .card-title {
-
       font-size: 18px;
-
       font-weight: 600;
-
       color: var(--text-title);
-
       margin-bottom: 8px;
-
     }
-
-
 
     .card-badge {
-
       display: inline-flex;
-
       font-size: 12px;
-
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-
       padding: 3px 8px;
-
       background: var(--accent-badge-bg);
-
       color: var(--accent-badge-text);
-
       border-radius: 6px;
-
       border: 1px solid rgba(224, 138, 85, 0.2);
-
     }
-
-
 
     .card-desc {
-
       font-size: 14px;
-
       color: var(--text-muted);
-
       margin-bottom: 22px;
-
       flex-grow: 1;
-
     }
-
-
 
     /* Кнопка установки */
-
     .btn-install {
-
       display: inline-flex;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 10px;
-
       background-color: var(--accent-warm);
-
       color: #191615;
-
       font-weight: 600;
-
       font-size: 14px;
-
       padding: 12px 18px;
-
       border-radius: 10px;
-
       text-decoration: none;
-
       transition: background-color 0.15s ease, transform 0.1s ease;
-
     }
-
-
 
     .btn-install:hover {
-
       background-color: var(--accent-warm-hover);
-
       transform: translateY(-1px);
-
     }
-
-
 
     .btn-install svg {
-
       width: 17px;
-
       height: 17px;
-
     }
-
-
 
     /* Пустое состояние */
-
     .not-found {
-
       display: none;
-
       text-align: center;
-
       padding: 40px 20px;
-
       background: var(--bg-surface);
-
       border: 1px dashed var(--border-warm);
-
       border-radius: var(--radius-lg);
-
       color: var(--text-muted);
-
     }
-
-
 
     .not-found h3 {
-
       font-size: 18px;
-
       color: var(--text-title);
-
       margin-bottom: 6px;
-
     }
-
   </style>
-
 </head>
-
 <body>
 
-
-
   <div class="container">
-
     
-
     <header>
-
       <span class="header-badge">Price Tools Hub</span>
-
       <h1>Каталог рабочих скриптов</h1>
-
       <p>Установка и быстрое обновление расширений для Tampermonkey</p>
-
     </header>
 
-
-
     <!-- Подсказка -->
-
     <section class="instruction-card">
-
       <div class="instruction-title">
-
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-
         </svg>
-
         Инструкция
-
       </div>
-
       <ul class="instruction-grid">
-
         <li class="step-item">
-
           <span class="step-pill">1</span>
-
           <span>Убедитесь, что у вас установлено расширение <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a>.</span>
-
         </li>
-
         <li class="step-item">
-
           <span class="step-pill">2</span>
-
           <span>Нажмите кнопку <strong>«Установить / Обновить»</strong> на нужной карточке.</span>
-
         </li>
-
         <li class="step-item">
-
           <span class="step-pill">3</span>
-
           <span>В открывшемся окне подтвердите установку кнопкой <strong>«Установить / Обновить»</strong>.</span>
-
         </li>
-
       </ul>
-
     </section>
-
-
 
     <!-- Поиск -->
-
     <section class="search-section">
-
       <div class="search-box">
-
         <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
-
         </svg>
-
         <input 
-
           type="text" 
-
           id="searchInput" 
-
           class="search-input" 
-
           placeholder="Поиск по названию или сайту..." 
-
           autocomplete="off"
-
         >
-
         <button id="clearBtn" class="btn-clear" title="Очистить">✕</button>
-
       </div>
-
       <div id="counter" class="counter"></div>
-
     </section>
 
-
-
     <!-- Список скриптов -->
-
     <main class="scripts-list" id="scriptsGrid">
 
-
-
-      <!-- Карточка вашего скрипта Miele -->
-
+      <!-- Карточка 1: Miele -->
       <article class="script-card" data-search="miele-store miele store проверка английских слов перевод карточки товаров">
-
         <div class="card-top">
-
           <h2 class="card-title">1. Miele-Store: Проверка перевода</h2>
-
           <span class="card-badge">miele-store.ru</span>
-
         </div>
-
         <p class="card-desc">Проверка и подсвечивание английских слов и терминов в карточках товаров каталога.</p>
-
-        <a class="btn-install" href="./scripts/miele-store-words.user.js">
-
+        <a class="btn-install" href="./scripts/miele-store-words.user.js" target="_blank" rel="noopener">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-
           </svg>
-
           Установить / Обновить
-
         </a>
-
       </article>
 
-            <article class="script-card" data-search="asko-russia проверка перевода">
-
+      <!-- Карточка 2: Asko -->
+      <article class="script-card" data-search="asko-russia asko russia проверка перевода слов">
         <div class="card-top">
-
-          <h2 class="card-title">1. Asko-Russia: Проверка перевода</h2>
-
+          <h2 class="card-title">2. Asko-Russia: Проверка перевода</h2>
           <span class="card-badge">asko-russia.ru</span>
-
         </div>
-
         <p class="card-desc">Проверка и подсвечивание английских слов и терминов на сайте.</p>
-
-        <a class="btn-install" href="./scripts/asko-russia-words.user.js">
-
+        <a class="btn-install" href="./scripts/asko-russia-words.user.js" target="_blank" rel="noopener">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-
           </svg>
-
           Установить / Обновить
-
         </a>
-
       </article>
-
 
     </main>
 
-
-
     <div id="notFound" class="not-found">
-
       <h3>Скрипт не найден</h3>
-
       <p>Попробуйте ввести другое ключевое слово или проверьте раскладку клавиатуры.</p>
-
     </div>
-
-
 
   </div>
 
-
-
   <script>
-
     const searchInput = document.getElementById('searchInput');
-
     const clearBtn = document.getElementById('clearBtn');
-
     const counter = document.getElementById('counter');
-
     const cards = document.querySelectorAll('#scriptsGrid .script-card');
-
     const notFound = document.getElementById('notFound');
-
     const totalCount = cards.length;
 
-
-
     function handleSearch() {
-
       const query = searchInput.value.trim().toLowerCase();
-
       let matchedCount = 0;
 
-
-
       cards.forEach(card => {
-
         const text = (card.getAttribute('data-search') + ' ' + card.innerText).toLowerCase();
-
         if (!query || text.includes(query)) {
-
           card.style.display = 'flex';
-
           matchedCount++;
-
         } else {
-
           card.style.display = 'none';
-
         }
-
       });
 
-
-
       clearBtn.style.display = query ? 'flex' : 'none';
-
       notFound.style.display = matchedCount === 0 ? 'block' : 'none';
 
-
-
       if (query) {
-
         counter.textContent = `Найдено: ${matchedCount} из ${totalCount}`;
-
       } else {
-
         counter.textContent = `Всего скриптов в каталоге: ${totalCount}`;
-
       }
-
     }
-
-
 
     searchInput.addEventListener('input', handleSearch);
 
-
-
     clearBtn.addEventListener('click', () => {
-
       searchInput.value = '';
-
       searchInput.focus();
-
       handleSearch();
-
     });
 
-
-
     handleSearch();
-
   </script>
-
 </body>
-
 </html>
