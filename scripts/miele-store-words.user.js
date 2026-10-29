@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Miele-store: проверка английских слов
 // @namespace    miele-store-content-check
-// @version      0.14
-// @description  Поиск английских слов: текущая страница, блоки карточки, массовая проверка всех карточек каталога
+// @version      0.20
+// @description  Поиск английских слов: текущая страница, массовая проверка каталога с HTML-подсветкой и CSV (1 строка на товар)
 // @match        *://miele-store.ru/*
 // @match        *://www.miele-store.ru/*
 // @grant        GM_getValue
@@ -301,7 +301,7 @@
   }
 
   const esc = s =>
-    String(s).replace(/[&<>"']/g, c => ({
+    String(s || '').replace(/[&<>"']/g, c => ({
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
@@ -312,7 +312,7 @@
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   GM_addStyle(`
-    #fwc-panel{position:fixed;right:16px;bottom:16px;z-index:2147483647;width:360px;max-height:84vh;overflow:auto;background:#fff;color:#222;font:13px/1.4 Arial,sans-serif;border:1px solid #888;border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+    #fwc-panel{position:fixed;right:16px;bottom:16px;z-index:2147483647;width:375px;max-height:84vh;overflow:auto;background:#fff;color:#222;font:13px/1.4 Arial,sans-serif;border:1px solid #888;border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.3)}
     #fwc-panel *{box-sizing:border-box}
     #fwc-panel header{padding:8px 10px;background:#333;color:#fff;cursor:pointer;display:flex;justify-content:space-between;position:sticky;top:0;z-index:1}
     #fwc-body{padding:10px}
@@ -328,7 +328,7 @@
     #fwc-panel .fwc-sw-t{flex:1}
     #fwc-panel button{cursor:pointer;font:inherit}
     #fwc-panel select,#fwc-panel input[type=number],#fwc-panel input[type=text]{width:100%;padding:5px;border:1px solid #bbb;border-radius:4px;margin:3px 0;font:inherit}
-    .fwc-btn{width:100%;padding:7px;margin:3px 0;border:1px solid #2d7ff9;background:#2d7ff9;color:#fff;border-radius:4px}
+    .fwc-btn{width:100%;padding:7px;margin:3px 0;border:1px solid #2d7ff9;background:#2d7ff9;color:#fff;border-radius:4px;font-weight:bold}
     .fwc-btn.sec{background:#fff;color:#2d7ff9}
     .fwc-btn.gray{background:#f2f2f2;color:#333;border-color:#ccc}
     .fwc-btn.red{background:#d33;border-color:#d33}
@@ -529,7 +529,6 @@
   let picking = false;
   let pickText = '';
 
-  // Состояние сворачивания секций ссылок
   let sectionsState = GM_getValue(STORE_SECTIONS, {});
   if (typeof sectionsState !== 'object' || sectionsState === null) sectionsState = {};
 
@@ -666,6 +665,7 @@
   function analyzeDoc(doc, path, blocks) {
     const hits = [];
     const found = {};
+    let descText = '';
 
     for (const b of blocks) {
       const roots = getRoots(b, doc);
@@ -676,6 +676,14 @@
 
       roots.forEach(r => scanElement(r, RAW_ALLOW, tmp, b.id, st, false));
       tmp.forEach(t => hits.push({ block: b.id, word: t.word }));
+
+      // Сохраняем чистый текст описания карточки
+      if (b.id === 'desc' || b.id === 'page') {
+        const textNodes = roots.map(r => (r.textContent || '').trim()).filter(Boolean);
+        if (textNodes.length && (!descText || b.id === 'desc')) {
+          descText = textNodes.join('\n\n');
+        }
+      }
     }
 
     const h1 = doc.querySelector('h1');
@@ -685,6 +693,7 @@
       title: h1 ? h1.textContent.trim() : path,
       hits,
       found,
+      descText,
     };
   }
 
@@ -786,7 +795,7 @@
           try {
             products[i] = analyzeDoc(await fetchDoc(location.origin + path), path, blocks);
           } catch (e) {
-            products[i] = { url: path, title: path, hits: [], found: {}, error: e.message };
+            products[i] = { url: path, title: path, hits: [], found: {}, descText: '', error: e.message };
             errors.push(path + ': ' + e.message);
           }
 
@@ -914,38 +923,208 @@
     fr.readAsText(file, 'utf-8');
   }
 
+  /* ===================== ФОРМАТИРОВАНИЕ СПИСКА СЛОВ ===================== */
+  function formatWordsSummary(hits) {
+    const counts = new Map();
+    hits.forEach(h => {
+      const k = h.word.toLowerCase();
+      if (!counts.has(k)) {
+        counts.set(k, { word: h.word, n: 0 });
+      }
+      counts.get(k).n++;
+    });
+
+    return [...counts.values()]
+      .sort((a, b) => b.n - a.n)
+      .map(item => item.n > 1 ? `${item.word} x${item.n}` : item.word)
+      .join(', ');
+  }
+
+  /* ===================== ЭКСПОРТ В CSV (1 КАРТОЧКА = 1 СТРОКА) ===================== */
   function downloadCsv() {
     const rep = bulk.report;
     if (!rep) return;
 
-    const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+    const q = v => '"' + String(v || '').replace(/"/g, '""').replace(/\r?\n/g, ' ') + '"';
     const names = Object.fromEntries(rep.blocks.map(b => [b.id, b.name]));
-    const rows = [['Страница', 'Название', 'Блок', 'Слово', 'Количество'].map(q).join(';')];
     const allow = getAllow();
 
+    const headers = ['Страница', 'Название', 'Проверенные блоки', 'Найденные слова', 'Текст описания'];
+    const rows = [headers.map(q).join(';')];
+
     rep.products.forEach(p => {
-      const agg = new Map();
+      const vh = visibleHits(p, allow);
+      if (!vh.length) return; // Только товары с замечаниями
 
-      visibleHits(p, allow).forEach(h => {
-        const k = h.block + '|' + h.word.toLowerCase();
-        if (!agg.has(k)) agg.set(k, { block: h.block, word: h.word, n: 0 });
-        agg.get(k).n++;
-      });
+      const wordsFormatted = formatWordsSummary(vh);
+      const blockNames = [...new Set(vh.map(h => names[h.block] || h.block))].join(', ');
 
-      agg.forEach(v => {
-        rows.push([location.origin + p.url, p.title, names[v.block] || v.block, v.word, v.n].map(q).join(';'));
-      });
+      rows.push([
+        location.origin + p.url,
+        p.title,
+        blockNames,
+        wordsFormatted,
+        p.descText || '',
+      ].map(q).join(';'));
     });
 
     const blob = new Blob(['\ufeff' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'english-words-' + rep.catalogName.replace(/[^\wА-Яа-я]+/g, '_') + '.csv';
+    a.download = 'miele-products-' + rep.catalogName.replace(/[^\wА-Яа-я]+/g, '_') + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();
 
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+
+  /* ===================== ОТКРЫТИЕ HTML-ОТЧЁТА ===================== */
+  function openHtmlReport() {
+    const rep = bulk.report;
+    if (!rep) return;
+
+    const allow = getAllow();
+    const prods = rep.products.map(p => ({ ...p, hits: visibleHits(p, allow) }));
+    const withHits = prods.filter(p => p.hits.length);
+    const totalHits = prods.reduce((s, p) => s + p.hits.length, 0);
+
+    const map = new Map();
+    withHits.forEach(p => {
+      p.hits.forEach(x => {
+        const k = x.word.toLowerCase();
+        if (!map.has(k)) map.set(k, { word: x.word, count: 0, prods: new Set() });
+        const v = map.get(k);
+        v.count++;
+        v.prods.add(p.url);
+      });
+    });
+    const words = [...map.values()].sort((a, b) => b.count - a.count);
+
+    function highlightWordsInText(text, hits) {
+      if (!text) return '';
+      let safe = esc(text);
+      const uniqueWords = [...new Set(hits.map(h => h.word))].sort((a, b) => b.length - a.length);
+      uniqueWords.forEach(w => {
+        const regex = new RegExp('(\\b' + w.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b)', 'gi');
+        safe = safe.replace(regex, '<mark class="highlight">$1</mark>');
+      });
+      return safe;
+    }
+
+    let html = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Отчёт: ${esc(rep.catalogName)}</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#f4f6fa;color:#1e293b;margin:0;padding:24px 16px}
+    .wrapper{max-width:1200px;margin:0 auto;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.08);padding:24px 30px}
+    header{border-bottom:2px solid #e2e8f0;padding-bottom:16px;margin-bottom:20px}
+    h1{font-size:22px;margin:0 0 6px;color:#0f172a}
+    .meta{color:#64748b;font-size:13px}
+    .stats-grid{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}
+    .stat-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 18px;min-width:140px;flex:1}
+    .stat-card .num{font-size:24px;font-weight:bold;color:#2563eb}
+    .stat-card .label{font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;margin-top:2px}
+    .words-box{margin:20px 0;background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+    .words-box h3{margin:0 0 10px;font-size:14px;color:#334155;text-transform:uppercase}
+    .word-cloud{display:flex;flex-wrap:wrap;gap:8px}
+    .word-badge{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:4px 10px;border-radius:16px;font-size:13px;font-weight:bold}
+    .word-badge span{color:#b91c1c;font-size:11px;font-weight:normal;margin-left:4px}
+    .search-input{width:100%;box-sizing:border-box;padding:12px 16px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;margin:18px 0;outline:none}
+    .search-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+    .items-list{margin-top:16px}
+    .item-card{border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin-bottom:14px;background:#fff;transition:border-color .15s}
+    .item-card:hover{border-color:#94a3b8}
+    .item-card.hidden{display:none}
+    .item-title{font-size:16px;font-weight:bold;margin-bottom:8px}
+    .item-title a{color:#2563eb;text-decoration:none}
+    .item-title a:hover{text-decoration:underline}
+    .words-line{margin:8px 0;font-size:13px;color:#b91c1c;background:#fff1f2;padding:6px 12px;border-radius:6px;display:inline-block}
+    .item-text{margin-top:10px;padding:12px 16px;background:#f8fafc;border-left:4px solid #3b82f6;font-size:13px;line-height:1.6;color:#334155;border-radius:0 6px 6px 0;white-space:pre-wrap;max-height:300px;overflow-y:auto}
+    mark.highlight{background:#fef08a;color:#854d0e;padding:2px 6px;border-radius:4px;font-weight:bold;margin:0 2px;border:1px solid #fde047}
+    .empty-msg{padding:24px;text-align:center;color:#15803d;font-weight:bold;font-size:16px}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>Отчёт: ${esc(rep.catalogName)} ${rep.cancelled ? '<span style="color:#ef4444;font-size:14px">(Прервано)</span>' : ''}</h1>
+      <div class="meta">Сайт: <b>miele-store.ru</b> · Проверено карточек: <b>${rep.products.length}</b> · С замечаниями: <b>${withHits.length}</b></div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num">${rep.products.length}</div>
+        <div class="label">Всего карточек</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color:${withHits.length ? '#dc2626' : '#16a34a'}">${withHits.length}</div>
+        <div class="label">С ошибками</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color:${totalHits ? '#dc2626' : '#16a34a'}">${totalHits}</div>
+        <div class="label">Всего слов</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">${words.length}</div>
+        <div class="label">Уникальных слов</div>
+      </div>
+    </div>`;
+
+    if (words.length) {
+      html += `
+    <div class="words-box">
+      <h3>Топ найденных слов (${words.length}):</h3>
+      <div class="word-cloud">
+        ${words.map(w => `<div class="word-badge">${esc(w.word)}<span>×${w.count}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <input type="text" id="reportSearch" class="search-input" placeholder="🔍 Быстрый поиск по названию карточки, слову или тексту описания...">
+
+    <div class="items-list" id="itemsList">`;
+
+      withHits.sort((a, b) => b.hits.length - a.hits.length);
+
+      withHits.forEach(p => {
+        const wordsFormatted = formatWordsSummary(p.hits);
+        const highlightedText = highlightWordsInText(p.descText || '', p.hits);
+
+        html += `
+      <div class="item-card" data-search="${esc(p.title.toLowerCase())} ${esc(p.hits.map(h => h.word).join(' ').toLowerCase())} ${esc((p.descText || '').toLowerCase())}">
+        <div class="item-title"><a href="${esc(location.origin + p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></div>
+        <div class="words-line">🚨 <b>Найденные слова:</b> ${esc(wordsFormatted)}</div>
+        ${highlightedText ? `<div class="item-text">${highlightedText}</div>` : ''}
+      </div>`;
+      });
+
+      html += `</div>`;
+    } else {
+      html += `<div class="empty-msg">✔ Английских слов не найдено! Все карточки чистые.</div>`;
+    }
+
+    html += `
+  </div>
+  <script>
+    const inp = document.getElementById('reportSearch');
+    if (inp) {
+      inp.addEventListener('input', () => {
+        const q = inp.value.trim().toLowerCase();
+        document.querySelectorAll('.item-card').forEach(el => {
+          el.classList.toggle('hidden', q && !el.dataset.search.includes(q));
+        });
+      });
+    }
+  </script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const tabUrl = URL.createObjectURL(blob);
+    window.open(tabUrl, '_blank');
+    setTimeout(() => URL.revokeObjectURL(tabUrl), 60000);
   }
 
   /* ===================== ПАНЕЛЬ ===================== */
@@ -954,7 +1133,6 @@
     const rep = bulk.report;
     if (!rep) return '';
 
-    const names = Object.fromEntries(rep.blocks.map(b => [b.id, b.name]));
     const allow = getAllow();
     const prods = rep.products.map(p => ({ ...p, hits: visibleHits(p, allow) }));
     const withHits = prods.filter(p => p.hits.length);
@@ -962,7 +1140,7 @@
 
     let h = `<h4>Отчёт: ${esc(rep.catalogName)}${rep.cancelled ? ' (остановлено)' : ''}</h4>`;
     h += `<div>Проверено карточек: <b>${rep.products.length}</b> (страниц каталога: ${rep.pages})</div>`;
-    h += `<div>С английскими словами: <b>${withHits.length}</b>, всего слов: <b>${totalHits}</b></div>`;
+    h += `<div>С замечаниями: <b>${withHits.length}</b>, всего слов: <b>${totalHits}</b></div>`;
 
     if (!rep.linksFound) {
       h += `<div class="fwc-warn">⚠ Ссылки на карточки не найдены. Откройте каталог, где видны товары, и запустите с пункта «Текущая страница».</div>`;
@@ -970,12 +1148,7 @@
 
     if (rep.errors.length) {
       h += `<div class="fwc-warn">⚠ Ошибок загрузки: ${rep.errors.length} (подробности в консоли F12)</div>`;
-      console.warn('[fwc] ошибки:', rep.errors);
     }
-
-    h += `<div style="margin-top:4px;color:#555">Блок найден в карточках: ` +
-      rep.blocks.map(b => `${esc(b.name)} — ${rep.products.filter(p => p.found[b.id]).length}`).join('; ') +
-      `</div>`;
 
     const map = new Map();
 
@@ -1002,32 +1175,13 @@
     h += renderExceptions();
 
     if (withHits.length) {
-      withHits.sort((a, b) => b.hits.length - a.hits.length);
-      h += `<h4>Карточки с находками (${Math.min(100, withHits.length)} из ${withHits.length})</h4>`;
-
-      h += withHits.slice(0, 100).map(p => {
-        const byBlock = {};
-
-        p.hits.forEach(x => {
-          if (!byBlock[x.block]) byBlock[x.block] = new Map();
-          const m = byBlock[x.block];
-          m.set(x.word, (m.get(x.word) || 0) + 1);
-        });
-
-        const lines = Object.entries(byBlock).map(([b, m]) =>
-          `${esc(names[b] || b)}: ` + [...m].map(([w, n]) => esc(w) + (n > 1 ? '×' + n : '')).join(', ')
-        );
-
-        return `<div class="fwc-prod"><a href="${esc(p.url)}" data-open="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>` +
-          lines.map(l => `<small>${l}</small>`).join('') +
-          `</div>`;
-      }).join('');
+      h += `<button class="fwc-btn" data-act="html" style="background:#243242;border-color:#243242;margin-top:6px">🌐 Открыть HTML-отчёт с текстом и подсветкой</button>` +
+           `<button class="fwc-btn sec" data-act="csv">📥 Скачать CSV-отчёт (1 строка на товар)</button>`;
     } else if (rep.products.length) {
       h += `<div class="fwc-ok" style="margin-top:6px">Английских слов не найдено ✔</div>`;
     }
 
-    h += `<button class="fwc-btn sec" data-act="csv">Скачать отчёт (CSV для Excel)</button>` +
-         `<button class="fwc-btn gray" data-act="bulk-hide">Скрыть отчёт</button>`;
+    h += `<button class="fwc-btn gray" data-act="bulk-hide">Скрыть отчёт</button>`;
 
     return h;
   }
@@ -1078,7 +1232,6 @@
   function renderLinks() {
     let h = '<h4>Разделы сайта</h4>';
 
-    // Группируем ссылки по секциям
     const groups = [];
     let currentGroup = null;
 
@@ -1087,15 +1240,12 @@
         currentGroup = { id: link.id, name: link.name, links: [], subs: {} };
         groups.push(currentGroup);
       } else if (link.sub) {
-        // Подссылка — добавляем в последнюю группу к родителю
         if (currentGroup) {
           if (!currentGroup.subs[link.parent]) currentGroup.subs[link.parent] = [];
           currentGroup.subs[link.parent].push(link);
         }
       } else {
-        // Обычная ссылка
         if (!currentGroup) {
-          // Ссылка до первой секции — создаём «невидимую» группу
           currentGroup = { id: '__top', name: '', links: [], subs: {}, noHeader: true };
           groups.push(currentGroup);
         }
@@ -1105,11 +1255,9 @@
 
     groups.forEach(g => {
       if (g.noHeader) {
-        // Без заголовка (главные ссылки в начале)
         h += `<div class="fwc-links">` + g.links.map(l => `<a href="${esc(l.url)}">${esc(l.name)}</a>`).join('') + `</div>`;
       } else {
-        // Секция с заголовком, который можно свернуть
-        const isCollapsed = sectionsState[g.id] !== false; // по умолчанию свёрнуто
+        const isCollapsed = sectionsState[g.id] !== false;
         h += `<div class="fwc-section-header${isCollapsed ? ' collapsed' : ''}" data-section="${esc(g.id)}">` +
           `<span class="fwc-arrow">▼</span> ${esc(g.name)}</div>`;
         h += `<div class="fwc-section-body fwc-links${isCollapsed ? ' hidden' : ''}">`;
@@ -1117,7 +1265,6 @@
         g.links.forEach(l => {
           h += `<a href="${esc(l.url)}" class="${l.hasSub ? 'fwc-parent-item' : ''}">${esc(l.name)}</a>`;
 
-          // Если у ссылки есть подменю — выводим подссылки сразу после неё
           if (l.hasSub && l.subId) {
             const subLinks = g.subs[l.subId] || [];
             subLinks.forEach(s => {
@@ -1174,7 +1321,6 @@
       }
     }
 
-    // СЕКЦИИ ССЫЛОК
     body += renderLinks();
 
     if (pageType) {
@@ -1193,7 +1339,7 @@
 
       body += result.stats.map(s => {
         if (!s.blocks) return `<div class="fwc-warn">⚠ ${esc(s.name)}: блок не найден (проверьте селектор)</div>`;
-        return `<div>${esc(s.name)}: <b>${s.hits}</b> ${s.hits ? '' : '<span class="fwc-ok">✔</span>'}</div>`;
+        return `<div>${esc(s.name)}: проверено блоков <b>${s.blocks} шт.</b> (найдено замечаний: <b>${s.hits}</b> ${s.hits ? '' : '<span class="fwc-ok">✔</span>'})</div>`;
       }).join('');
 
       body += `<div style="margin-top:4px">Всего найдено: <b>${result.found.length}</b></div>`;
@@ -1257,7 +1403,7 @@
     const keepScroll = panel.scrollTop;
 
     panel.innerHTML =
-      `<header data-act="collapse"><b>Проверка английских слов</b><span>${collapsed ? '▲' : '▼'}</span></header>` +
+      `<header data-act="collapse"><b>Miele Check</b><span>${collapsed ? '▲' : '▼'}</span></header>` +
       `<div id="fwc-body" style="display:${collapsed ? 'none' : 'block'}">${body}</div>`;
 
     panel.scrollTop = keepScroll;
@@ -1307,7 +1453,6 @@
 
     const d = t.dataset;
 
-    // === Сворачивание/разворачивание секции ===
     if (d.section) {
       const id = d.section;
       const isCollapsed = sectionsState[id] !== false;
@@ -1358,12 +1503,14 @@
       bulk.report = null;
       saveReport();
       render();
+    } else if (d.act === 'html') {
+      openHtmlReport();
+    } else if (d.act === 'csv') {
+      downloadCsv();
     } else if (d.act === 'back') {
       if (bulk.report && bulk.report.sourceUrl) location.href = bulk.report.sourceUrl;
     } else if (d.act === 'rep-run') {
       if (bulk.report) run(blocksByIds(bulk.report.blocks.map(b => b.id)), 'Как в отчёте каталога');
-    } else if (d.act === 'csv') {
-      downloadCsv();
     } else if (d.allow) {
       afterAllowChange(addWords(d.allow));
     } else if (d.ballow) {
@@ -1398,7 +1545,6 @@
     }
 
     pickText = path.join('\n← ');
-    console.log('[fwc] цепочка элементов:\n' + pickText);
     render();
   }, true);
 
