@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Price Tools — Каталог скриптов 1</title>
+  <title>Price Tools — Каталог скриптов</title>
   <style>
     :root {
       /* Теплая темная палитра */
@@ -42,14 +42,11 @@
       color: var(--text-main);
       line-height: 1.55;
       padding: 40px 16px 60px;
-      overflow-x: hidden;
     }
 
     .container {
       max-width: 960px;
       margin: 0 auto;
-      position: relative;
-      z-index: 2;
     }
 
     /* Шапка сайта */
@@ -83,8 +80,9 @@
       color: var(--text-muted);
     }
 
-    /* Блок инструкции */
+    /* Блок инструкции с сидящим контурным котиком */
     .instruction-card {
+      position: relative;
       background: var(--bg-surface);
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
@@ -150,6 +148,135 @@
       color: var(--accent-badge-text);
       text-decoration: underline;
       text-underline-offset: 3px;
+    }
+
+    /* =========================================
+       КОНТУРНЫЙ КОТИК НА КРАЮ КАРТОЧКИ
+    ========================================= */
+    .card-cat-box {
+      position: absolute;
+      top: -51px;
+      right: 28px;
+      width: 70px;
+      height: 60px;
+      cursor: pointer;
+      user-select: none;
+      z-index: 5;
+    }
+
+    @media (max-width: 540px) {
+      .card-cat-box {
+        right: 14px;
+        top: -46px;
+        transform: scale(0.85);
+      }
+    }
+
+    .cat-outline-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Линии и прозрачный контур */
+    .cat-stroke {
+      stroke: var(--accent-warm);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: var(--bg-surface); /* перекрывает рамку карточки под котиком */
+    }
+
+    .cat-stroke-thin {
+      stroke: var(--accent-badge-text);
+      stroke-width: 1.2;
+      stroke-linecap: round;
+      fill: none;
+      opacity: 0.85;
+    }
+
+    .cat-pupil {
+      fill: var(--accent-badge-text);
+      stroke: none;
+      transition: cx 0.05s ease-out, cy 0.05s ease-out;
+    }
+
+    /* Анимация хвоста */
+    .cat-tail-line {
+      transform-origin: 20px 52px;
+      animation: catTailSway 4s infinite ease-in-out;
+    }
+
+    @keyframes catTailSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* Анимация умывания лапкой (каждые 7 секунд) */
+    .cat-paw-wash {
+      transform-box: fill-box;
+      transform-origin: top right;
+      animation: catWashPaw 7.5s infinite ease-in-out;
+    }
+
+    @keyframes catWashPaw {
+      0%, 60%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      67% {
+        transform: translate(-3px, -23px) rotate(28deg);
+      }
+      72% {
+        transform: translate(-1px, -27px) rotate(16deg);
+      }
+      77% {
+        transform: translate(-4px, -22px) rotate(26deg);
+      }
+      82% {
+        transform: translate(-1px, -27px) rotate(16deg);
+      }
+      88% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+    }
+
+    /* Прищуривание глаза во время умывания */
+    .cat-eye-squint {
+      transform-origin: 47px 22px;
+      animation: catSquint 7.5s infinite ease-in-out;
+    }
+
+    @keyframes catSquint {
+      0%, 62%, 87%, 100% {
+        transform: scaleY(1);
+      }
+      67%, 82% {
+        transform: scaleY(0.18);
+      }
+    }
+
+    /* Всплывающее облачко при клике на котика */
+    .cat-mini-bubble {
+      position: absolute;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--bg-surface-soft);
+      color: var(--accent-badge-text);
+      border: 1px solid var(--accent-warm);
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .cat-mini-bubble.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* Поиск */
@@ -328,94 +455,6 @@
       color: var(--text-title);
       margin-bottom: 6px;
     }
-
-    /* =========================================
-       СТИЛИ ДЛЯ КОТИКА-СПУТНИКА
-    ========================================= */
-    .cat-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 74px;
-      height: 56px;
-      pointer-events: auto;
-      cursor: pointer;
-      z-index: 100;
-      user-select: none;
-      will-change: transform;
-      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
-      transition: opacity 0.3s;
-    }
-
-    .cat-inner {
-      width: 100%;
-      height: 100%;
-      transform-origin: bottom center;
-      transition: transform 0.2s ease-out;
-    }
-
-    /* Анимация ходьбы */
-    .cat-walking .cat-inner {
-      animation: catBob 0.35s infinite alternate ease-in-out;
-    }
-
-    .cat-walking .leg-1 {
-      animation: catLegStep1 0.35s infinite alternate ease-in-out;
-    }
-
-    .cat-walking .leg-2 {
-      animation: catLegStep2 0.35s infinite alternate ease-in-out;
-    }
-
-    @keyframes catBob {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-4px); }
-    }
-
-    @keyframes catLegStep1 {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-3px) rotate(-15deg); }
-    }
-
-    @keyframes catLegStep2 {
-      0% { transform: translateY(-3px) rotate(15deg); }
-      100% { transform: translateY(0) rotate(0deg); }
-    }
-
-    /* Хвостик шевелится всегда */
-    .cat-tail {
-      transform-origin: 22px 48px;
-      animation: catTailWag 2.5s infinite ease-in-out;
-    }
-
-    @keyframes catTailWag {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(14deg); }
-    }
-
-    /* Облачко с мыслями/мурчанием */
-    .cat-bubble {
-      position: absolute;
-      bottom: 58px;
-      left: 50%;
-      transform: translateX(-50%) translateY(6px);
-      background: var(--bg-surface-soft);
-      color: var(--accent-badge-text);
-      border: 1px solid var(--accent-warm);
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .cat-bubble.active {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
   </style>
 </head>
 <body>
@@ -428,8 +467,69 @@
       <p>Установка и быстрое обновление расширений для Tampermonkey</p>
     </header>
 
-    <!-- Подсказка -->
+    <!-- Подсказка с сидящим контурным котиком -->
     <section class="instruction-card">
+      
+      <!-- Контурный котик на краю рамки -->
+      <div class="card-cat-box" id="catBox" title="Погладить">
+        <div class="cat-mini-bubble" id="catBubble">Мяу~ 🐾</div>
+        
+        <svg class="cat-outline-svg" viewBox="0 0 76 66" id="catSvg">
+          <!-- Хвостик с мягким покачиванием -->
+          <path class="cat-stroke cat-tail-line" d="M18,52 C11,52 8,43 12,36 C14,33 17,35 16,38 C13,42 15,48 21,48" />
+
+          <!-- Сидящее тело котика -->
+          <path class="cat-stroke" d="M25,32 C18,41 16,52 22,54 L54,54 C59,52 57,41 51,32 Z" />
+
+          <!-- Задние лапки по бокам -->
+          <path class="cat-stroke" d="M19,54 C17,50 21,46 25,48" />
+          <path class="cat-stroke" d="M57,54 C59,50 55,46 51,48" />
+
+          <!-- Голова и ушки -->
+          <path class="cat-stroke" d="
+            M29,19 
+            L24,8 L34,13 
+            C36,12 40,12 42,13 
+            L52,8 L47,19 
+            C54,23 54,32 47,36 
+            C43,38 33,38 29,36 
+            C22,32 22,23 29,19 Z
+          " />
+
+          <!-- Внутренние контуры ушек -->
+          <path class="cat-stroke-thin" d="M27,16 L26,11 L32,14" />
+          <path class="cat-stroke-thin" d="M49,16 L50,11 L44,14" />
+
+          <!-- Левый глаз -->
+          <g>
+            <ellipse class="cat-stroke" cx="33" cy="23" rx="3.5" ry="4" />
+            <circle class="cat-pupil" id="pupilL" cx="33" cy="23" r="1.6" />
+          </g>
+
+          <!-- Правый глаз (прищуривается при умывании) -->
+          <g class="cat-eye-squint">
+            <ellipse class="cat-stroke" cx="43" cy="23" rx="3.5" ry="4" />
+            <circle class="cat-pupil" id="pupilR" cx="43" cy="23" r="1.6" />
+          </g>
+
+          <!-- Носик и милая мордочка :3 -->
+          <path class="cat-stroke-thin" d="M37,27 L39,27 L38,28.2 Z" fill="var(--accent-warm)" />
+          <path class="cat-stroke-thin" d="M35.5,29.5 Q38,31 38,29 Q38,31 40.5,29.5" />
+
+          <!-- Усики -->
+          <path class="cat-stroke-thin" d="M33,28 L23,26 M33,30 L22,31" />
+          <path class="cat-stroke-thin" d="M43,28 L53,26 M43,30 L54,31" />
+
+          <!-- Левая передняя лапка (опирается на край карточки) -->
+          <path class="cat-stroke" d="M31,43 L31,54 C31,55.5 35,55.5 35,54 L35,45" />
+
+          <!-- Правая лапка (умывается) -->
+          <g class="cat-paw-wash">
+            <path class="cat-stroke" d="M41,45 L41,54 C41,55.5 45,55.5 45,54 L45,43 Z" />
+          </g>
+        </svg>
+      </div>
+
       <div class="instruction-title">
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -497,81 +597,8 @@
 
   </div>
 
-  <!-- КОТИК -->
-  <div id="cat" class="cat-wrapper" title="Погладить котика">
-    <div id="catBubble" class="cat-bubble">Мяу! 🐾</div>
-    <div class="cat-inner" id="catInner">
-      <svg viewBox="0 0 100 80" width="74" height="56">
-        <!-- Хвост -->
-        <path class="cat-tail" d="M22,46 Q8,36 10,22 Q13,16 18,18 Q14,26 25,43" fill="#cf7742" />
-        
-        <!-- Лапки задние -->
-        <g class="leg-1">
-          <ellipse cx="28" cy="58" rx="6" ry="4" fill="#cf7742" />
-        </g>
-        <g class="leg-2">
-          <ellipse cx="44" cy="58" rx="6" ry="4" fill="#e08a55" />
-        </g>
-
-        <!-- Тело котика -->
-        <ellipse cx="48" cy="46" rx="26" ry="17" fill="#e08a55" />
-        <!-- Грудка/пузико -->
-        <path d="M42,38 Q52,38 58,46 Q50,56 38,52 Z" fill="#fcf6f0" opacity="0.9"/>
-
-        <!-- Лапки передние -->
-        <g class="leg-1">
-          <ellipse cx="58" cy="58" rx="5.5" ry="4" fill="#cf7742" />
-        </g>
-        <g class="leg-2">
-          <ellipse cx="70" cy="58" rx="5.5" ry="4" fill="#fcf6f0" />
-        </g>
-
-        <!-- Голова -->
-        <circle cx="72" cy="33" r="16" fill="#e08a55" />
-
-        <!-- Ушки с розовой серединкой -->
-        <polygon points="63,22 68,10 74,21" fill="#cf7742" />
-        <polygon points="65,20 68,13 71,20" fill="#fca5a5" />
-        <polygon points="76,21 82,11 87,23" fill="#cf7742" />
-        <polygon points="78,20 82,14 85,21" fill="#fca5a5" />
-
-        <!-- Мордочка -->
-        <ellipse cx="77" cy="37" rx="7.5" ry="5" fill="#fcf6f0" />
-        <polygon points="76,35 79,35 77.5,37" fill="#e06262" />
-        <path d="M75,38 Q77.5,40 77.5,37.5 Q77.5,40 80,38" stroke="#a4552b" stroke-width="1.2" fill="none" />
-
-        <!-- Усики -->
-        <line x1="79" y1="36" x2="90" y2="34" stroke="#fcf6f0" stroke-width="1" opacity="0.8"/>
-        <line x1="79" y1="38" x2="90" y2="39" stroke="#fcf6f0" stroke-width="1" opacity="0.8"/>
-        <line x1="71" y1="36" x2="62" y2="35" stroke="#fcf6f0" stroke-width="1" opacity="0.8"/>
-        <line x1="71" y1="38" x2="62" y2="40" stroke="#fcf6f0" stroke-width="1" opacity="0.8"/>
-
-        <!-- Открытые глазки (следят за мышкой) -->
-        <g id="catEyesOpen">
-          <ellipse cx="70" cy="29" rx="4" ry="4.8" fill="#fef08a" />
-          <ellipse cx="80" cy="29" rx="4" ry="4.8" fill="#fef08a" />
-          <circle id="pupilL" cx="70" cy="29" r="2.2" fill="#191615" />
-          <circle id="pupilR" cy="29" cx="80" r="2.2" fill="#191615" />
-          <circle cx="69" cy="27.5" r="1" fill="#fff" />
-          <circle cx="79" cy="27.5" r="1" fill="#fff" />
-        </g>
-
-        <!-- Закрытые глазки (когда спит) -->
-        <g id="catEyesClosed" style="display: none;">
-          <path d="M66,30 Q70,33 74,30" stroke="#352a24" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-          <path d="M76,30 Q80,33 84,30" stroke="#352a24" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-        </g>
-
-        <!-- Zzz частицы сна -->
-        <text id="catZzz" x="78" y="14" fill="#f6b388" font-size="12" font-family="monospace" font-weight="bold" style="display: none;">zZ</text>
-      </svg>
-    </div>
-  </div>
-
   <script>
-    /* =========================================
-       1. ЛОГИКА ПОИСКА И ФИЛЬТРАЦИИ
-    ========================================= */
+    /* 1. Поиск и фильтрация */
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearBtn');
     const counter = document.getElementById('counter');
@@ -613,138 +640,47 @@
 
     handleSearch();
 
-    /* =========================================
-       2. ИНТЕРАКТИВНЫЙ КОТИК-СПУТНИК
-    ========================================= */
-    const cat = document.getElementById('cat');
-    const catInner = document.getElementById('catInner');
-    const catBubble = document.getElementById('catBubble');
-    const eyesOpen = document.getElementById('catEyesOpen');
-    const eyesClosed = document.getElementById('catEyesClosed');
-    const catZzz = document.getElementById('catZzz');
+    /* 2. Взгляд контурного котика на курсор */
+    const catSvg = document.getElementById('catSvg');
     const pupilL = document.getElementById('pupilL');
     const pupilR = document.getElementById('pupilR');
-
-    // Позиция котика и мышки
-    let catX = window.innerWidth - 120;
-    let catY = window.innerHeight - 100;
-    let targetX = catX;
-    let targetY = catY;
-    let mouseX = catX;
-    let mouseY = catY;
-
-    let isSleeping = false;
-    let lastMouseMove = Date.now();
-    let facing = 1; // 1: вправо, -1: влево
+    const catBox = document.getElementById('catBox');
+    const catBubble = document.getElementById('catBubble');
     let bubbleTimeout = null;
 
-    const phrases = ["Муррр... ❤️", "Мяу! 🐾", "Работаем! ✨", "Лапки наготове", "мур-мур"];
-
-    // Начальное положение
-    cat.style.transform = `translate(${catX}px, ${catY}px)`;
+    const meows = ["Мяу~ 🐾", "Мурр... ✨", "(=^･ω･^=)", "Шурш-шурш"];
 
     window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      lastMouseMove = Date.now();
+      if (!catSvg) return;
+      const rect = catSvg.getBoundingClientRect();
+      const headX = rect.left + rect.width * 0.5;
+      const headY = rect.top + rect.height * 0.38;
 
-      // Просыпаемся, если спали
-      if (isSleeping) {
-        wakeUp();
-      }
+      const dx = e.clientX - headX;
+      const dy = e.clientY - headY;
+      const angle = Math.atan2(dy, dx);
+      const dist = Math.min(Math.hypot(dx, dy), 350);
+      const offset = (dist / 350) * 1.5;
 
-      // Цель для котика — встать чуть сбоку и ниже курсора (чтобы не мешать кликать)
-      const offsetX = mouseX > catX ? -85 : 85;
-      const offsetY = 25;
-      
-      // Ограничиваем пределы экрана
-      targetX = Math.max(10, Math.min(window.innerWidth - 85, mouseX + offsetX));
-      targetY = Math.max(10, Math.min(window.innerHeight - 70, mouseY + offsetY));
+      const moveX = Math.cos(angle) * offset;
+      const moveY = Math.sin(angle) * offset;
+
+      pupilL.setAttribute('cx', 33 + moveX);
+      pupilL.setAttribute('cy', 23 + moveY);
+      pupilR.setAttribute('cx', 43 + moveX);
+      pupilR.setAttribute('cy', 23 + moveY);
     });
 
     // Реакция на клик по котику
-    cat.addEventListener('click', () => {
-      wakeUp();
-      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-      showBubble(phrase);
-    });
-
-    function showBubble(text) {
-      catBubble.textContent = text;
-      catBubble.classList.add('active');
+    catBox.addEventListener('click', () => {
+      const phrase = meows[Math.floor(Math.random() * meows.length)];
+      catBubble.textContent = phrase;
+      catBubble.classList.add('show');
       clearTimeout(bubbleTimeout);
       bubbleTimeout = setTimeout(() => {
-        catBubble.classList.remove('active');
-      }, 2000);
-    }
-
-    function wakeUp() {
-      isSleeping = false;
-      eyesOpen.style.display = 'block';
-      eyesClosed.style.display = 'none';
-      catZzz.style.display = 'none';
-      lastMouseMove = Date.now();
-    }
-
-    function fallAsleep() {
-      isSleeping = true;
-      cat.classList.remove('cat-walking');
-      eyesOpen.style.display = 'none';
-      eyesClosed.style.display = 'block';
-      catZzz.style.display = 'block';
-    }
-
-    // Главный цикл анимации (60 FPS)
-    function loop() {
-      const now = Date.now();
-
-      // Проверка на сон после 8 секунд бездействия
-      if (!isSleeping && (now - lastMouseMove > 8000)) {
-        fallAsleep();
-      }
-
-      if (!isSleeping) {
-        const dx = targetX - catX;
-        const dy = targetY - catY;
-        const dist = Math.hypot(dx, dy);
-
-        // Если расстояние больше 12px — котик идет
-        if (dist > 12) {
-          cat.classList.add('cat-walking');
-          catX += dx * 0.045; // Плавная скорость шага
-          catY += dy * 0.045;
-
-          // Поворачиваем котика в сторону движения
-          if (dx > 4) facing = 1;
-          if (dx < -4) facing = -1;
-        } else {
-          cat.classList.remove('cat-walking');
-        }
-
-        // Поворот спрайта
-        catInner.style.transform = `scaleX(${facing})`;
-
-        // Расчет взгляда зрачков на курсор мыши
-        const headScreenX = catX + (facing === 1 ? 55 : 19);
-        const headScreenY = catY + 25;
-        const lookAngle = Math.atan2(mouseY - headScreenY, mouseX - headScreenX);
-        const lookDist = Math.min(Math.hypot(mouseX - headScreenX, mouseY - headScreenY), 150);
-        const offset = (lookDist / 150) * 1.8;
-
-        const pX = Math.cos(lookAngle) * offset * facing;
-        const pY = Math.sin(lookAngle) * offset;
-
-        pupilL.setAttribute('cx', 70 + pX);
-        pupilL.setAttribute('cy', 29 + pY);
-        pupilR.setAttribute('cx', 80 + pX);
-        pupilR.setAttribute('cy', 29 + pY);
-      }
-
-      cat.style.transform = `translate(${catX}px, ${catY}px)`;
-      requestAnimationFrame(loop);
-    }
-
-    requestAnimationFrame(loop);
+        catBubble.classList.remove('show');
+      }, 1800);
+    });
   </script>
 </body>
 </html>
