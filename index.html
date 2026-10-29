@@ -1,686 +1,903 @@
 <!DOCTYPE html>
+
 <html lang="ru">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Price Tools — Каталог скриптов</title>
+
   <style>
+
     :root {
+
       /* Теплая темная палитра */
+
       --bg-main: #191615;
+
       --bg-surface: #24201e;
+
       --bg-surface-soft: #2d2825;
+
       --border-warm: #3d3632;
+
       --border-focus: #e09462;
+
       
+
       /* Текст: сливочный и теплый бежевый */
+
       --text-title: #fcf6f0;
+
       --text-main: #e8ded4;
+
       --text-muted: #ad9f94;
 
+
+
       /* Уютные акцентные цвета */
+
       --accent-warm: #e08a55;
+
       --accent-warm-hover: #f29a65;
+
       --accent-badge-bg: #352a24;
+
       --accent-badge-text: #f6b388;
+
       
+
       --radius-sm: 8px;
+
       --radius-md: 14px;
+
       --radius-lg: 18px;
+
       --shadow-warm: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+
     }
+
+
 
     * {
+
       box-sizing: border-box;
+
       margin: 0;
+
       padding: 0;
+
     }
+
+
 
     body {
+
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
       background-color: var(--bg-main);
+
       color: var(--text-main);
+
       line-height: 1.55;
+
       padding: 40px 16px 60px;
+
     }
+
+
 
     .container {
+
       max-width: 960px;
+
       margin: 0 auto;
+
     }
+
+
 
     /* Шапка сайта */
+
     header {
+
       margin-bottom: 28px;
+
       text-align: center;
+
     }
+
+
 
     .header-badge {
+
       display: inline-block;
+
       font-size: 13px;
+
       font-weight: 500;
+
       padding: 4px 12px;
+
       border-radius: 20px;
+
       background: var(--accent-badge-bg);
+
       color: var(--accent-badge-text);
+
       border: 1px solid rgba(224, 138, 85, 0.25);
+
       margin-bottom: 12px;
+
     }
+
+
 
     header h1 {
+
       font-size: 30px;
+
       font-weight: 700;
+
       color: var(--text-title);
+
       margin-bottom: 8px;
+
       letter-spacing: -0.02em;
+
     }
+
+
 
     header p {
+
       font-size: 16px;
+
       color: var(--text-muted);
+
     }
 
-    /* Блок инструкции с сидящим контурным котиком */
+
+
+    /* Блок инструкции */
+
     .instruction-card {
-      position: relative;
+
       background: var(--bg-surface);
+
       border: 1px solid var(--border-warm);
+
       border-radius: var(--radius-lg);
+
       padding: 22px 26px;
+
       margin-bottom: 28px;
+
       box-shadow: var(--shadow-warm);
+
     }
+
+
 
     .instruction-title {
+
       font-size: 15px;
+
       font-weight: 600;
+
       color: var(--accent-badge-text);
+
       display: flex;
+
       align-items: center;
+
       gap: 8px;
+
       margin-bottom: 14px;
+
       text-transform: uppercase;
+
       letter-spacing: 0.05em;
+
     }
+
+
 
     .instruction-grid {
+
       list-style: none;
+
       display: grid;
+
       grid-template-columns: 1fr;
+
       gap: 12px;
+
     }
+
+
 
     @media (min-width: 768px) {
+
       .instruction-grid {
+
         grid-template-columns: repeat(3, 1fr);
+
         gap: 16px;
+
       }
+
     }
+
+
 
     .step-item {
+
       display: flex;
+
       gap: 12px;
+
       align-items: flex-start;
+
       background: var(--bg-surface-soft);
+
       border: 1px solid var(--border-warm);
+
       padding: 14px;
+
       border-radius: var(--radius-md);
+
       font-size: 14px;
+
       color: var(--text-main);
+
     }
+
+
 
     .step-pill {
+
       background: var(--accent-warm);
+
       color: #1a1412;
+
       font-weight: 700;
+
       font-size: 12px;
+
       width: 22px;
+
       height: 22px;
+
       border-radius: 50%;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
       flex-shrink: 0;
+
       margin-top: 1px;
+
     }
+
+
 
     .step-item a {
+
       color: var(--accent-badge-text);
+
       text-decoration: underline;
+
       text-underline-offset: 3px;
+
     }
 
-    /* =========================================
-       КОНТУРНЫЙ КОТИК НА КРАЮ КАРТОЧКИ
-    ========================================= */
-    .card-cat-box {
-      position: absolute;
-      top: -51px;
-      right: 28px;
-      width: 70px;
-      height: 60px;
-      cursor: pointer;
-      user-select: none;
-      z-index: 5;
-    }
 
-    @media (max-width: 540px) {
-      .card-cat-box {
-        right: 14px;
-        top: -46px;
-        transform: scale(0.85);
-      }
-    }
-
-    .cat-outline-svg {
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
-
-    /* Линии и прозрачный контур */
-    .cat-stroke {
-      stroke: var(--accent-warm);
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: var(--bg-surface); /* перекрывает рамку карточки под котиком */
-    }
-
-    .cat-stroke-thin {
-      stroke: var(--accent-badge-text);
-      stroke-width: 1.2;
-      stroke-linecap: round;
-      fill: none;
-      opacity: 0.85;
-    }
-
-    .cat-pupil {
-      fill: var(--accent-badge-text);
-      stroke: none;
-      transition: cx 0.05s ease-out, cy 0.05s ease-out;
-    }
-
-    /* Анимация хвоста */
-    .cat-tail-line {
-      transform-origin: 20px 52px;
-      animation: catTailSway 4s infinite ease-in-out;
-    }
-
-    @keyframes catTailSway {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(10deg); }
-    }
-
-    /* Анимация умывания лапкой (каждые 7 секунд) */
-    .cat-paw-wash {
-      transform-box: fill-box;
-      transform-origin: top right;
-      animation: catWashPaw 7.5s infinite ease-in-out;
-    }
-
-    @keyframes catWashPaw {
-      0%, 60%, 100% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-      67% {
-        transform: translate(-3px, -23px) rotate(28deg);
-      }
-      72% {
-        transform: translate(-1px, -27px) rotate(16deg);
-      }
-      77% {
-        transform: translate(-4px, -22px) rotate(26deg);
-      }
-      82% {
-        transform: translate(-1px, -27px) rotate(16deg);
-      }
-      88% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-    }
-
-    /* Прищуривание глаза во время умывания */
-    .cat-eye-squint {
-      transform-origin: 47px 22px;
-      animation: catSquint 7.5s infinite ease-in-out;
-    }
-
-    @keyframes catSquint {
-      0%, 62%, 87%, 100% {
-        transform: scaleY(1);
-      }
-      67%, 82% {
-        transform: scaleY(0.18);
-      }
-    }
-
-    /* Всплывающее облачко при клике на котика */
-    .cat-mini-bubble {
-      position: absolute;
-      bottom: 58px;
-      left: 50%;
-      transform: translateX(-50%) translateY(4px);
-      background: var(--bg-surface-soft);
-      color: var(--accent-badge-text);
-      border: 1px solid var(--accent-warm);
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .cat-mini-bubble.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
 
     /* Поиск */
+
     .search-section {
+
       position: sticky;
+
       top: 16px;
+
       z-index: 20;
+
       margin-bottom: 24px;
+
       display: flex;
+
       flex-direction: column;
+
       gap: 8px;
+
     }
+
+
 
     .search-box {
+
       position: relative;
+
       display: flex;
+
       align-items: center;
+
     }
+
+
 
     .search-icon {
+
       position: absolute;
+
       left: 18px;
+
       width: 20px;
+
       height: 20px;
+
       color: var(--text-muted);
+
       pointer-events: none;
+
     }
+
+
 
     .search-input {
+
       width: 100%;
+
       background: var(--bg-surface);
+
       border: 1px solid var(--border-warm);
+
       color: var(--text-title);
+
       font-size: 15px;
+
       padding: 14px 44px 14px 50px;
+
       border-radius: var(--radius-md);
+
       box-shadow: var(--shadow-warm);
+
       outline: none;
+
       transition: border-color 0.2s, box-shadow 0.2s;
+
     }
+
+
 
     .search-input:focus {
+
       border-color: var(--border-focus);
+
       box-shadow: 0 0 0 3px rgba(224, 138, 85, 0.2);
+
     }
+
+
 
     .search-input::placeholder {
+
       color: var(--text-muted);
+
     }
+
+
 
     .btn-clear {
+
       position: absolute;
+
       right: 16px;
+
       background: var(--border-warm);
+
       border: none;
+
       color: var(--text-muted);
+
       width: 22px;
+
       height: 22px;
+
       border-radius: 50%;
+
       cursor: pointer;
+
       display: none;
+
       align-items: center;
+
       justify-content: center;
+
       font-size: 12px;
+
     }
+
+
 
     .btn-clear:hover {
+
       background: var(--accent-warm);
+
       color: #191615;
+
     }
+
+
 
     .counter {
+
       font-size: 13px;
+
       color: var(--text-muted);
+
       padding-left: 6px;
+
     }
+
+
 
     /* Сетка карточек */
+
     .scripts-list {
+
       display: grid;
+
       grid-template-columns: 1fr;
+
       gap: 18px;
+
     }
+
+
 
     @media (min-width: 680px) {
+
       .scripts-list {
+
         grid-template-columns: repeat(2, 1fr);
+
       }
+
     }
+
+
 
     .script-card {
+
       background: var(--bg-surface);
+
       border: 1px solid var(--border-warm);
+
       border-radius: var(--radius-lg);
+
       padding: 22px;
+
       display: flex;
+
       flex-direction: column;
+
       justify-content: space-between;
+
       box-shadow: var(--shadow-warm);
+
       transition: transform 0.2s ease, border-color 0.2s ease;
+
     }
+
+
 
     .script-card:hover {
+
       transform: translateY(-2px);
+
       border-color: rgba(224, 138, 85, 0.5);
+
     }
+
+
 
     .card-top {
+
       margin-bottom: 12px;
+
     }
+
+
 
     .card-title {
+
       font-size: 18px;
+
       font-weight: 600;
+
       color: var(--text-title);
+
       margin-bottom: 8px;
+
     }
+
+
 
     .card-badge {
+
       display: inline-flex;
+
       font-size: 12px;
+
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+
       padding: 3px 8px;
+
       background: var(--accent-badge-bg);
+
       color: var(--accent-badge-text);
+
       border-radius: 6px;
+
       border: 1px solid rgba(224, 138, 85, 0.2);
+
     }
+
+
 
     .card-desc {
+
       font-size: 14px;
+
       color: var(--text-muted);
+
       margin-bottom: 22px;
+
       flex-grow: 1;
+
     }
+
+
 
     /* Кнопка установки */
+
     .btn-install {
+
       display: inline-flex;
+
       align-items: center;
+
       justify-content: center;
+
       gap: 10px;
+
       background-color: var(--accent-warm);
+
       color: #191615;
+
       font-weight: 600;
+
       font-size: 14px;
+
       padding: 12px 18px;
+
       border-radius: 10px;
+
       text-decoration: none;
+
       transition: background-color 0.15s ease, transform 0.1s ease;
+
     }
+
+
 
     .btn-install:hover {
+
       background-color: var(--accent-warm-hover);
+
       transform: translateY(-1px);
+
     }
+
+
 
     .btn-install svg {
+
       width: 17px;
+
       height: 17px;
+
     }
+
+
 
     /* Пустое состояние */
+
     .not-found {
+
       display: none;
+
       text-align: center;
+
       padding: 40px 20px;
+
       background: var(--bg-surface);
+
       border: 1px dashed var(--border-warm);
+
       border-radius: var(--radius-lg);
+
       color: var(--text-muted);
+
     }
+
+
 
     .not-found h3 {
+
       font-size: 18px;
+
       color: var(--text-title);
+
       margin-bottom: 6px;
+
     }
+
   </style>
+
 </head>
+
 <body>
 
+
+
   <div class="container">
+
     
+
     <header>
+
       <span class="header-badge">Price Tools Hub</span>
+
       <h1>Каталог рабочих скриптов</h1>
+
       <p>Установка и быстрое обновление расширений для Tampermonkey</p>
+
     </header>
 
-    <!-- Подсказка с сидящим контурным котиком -->
+
+
+    <!-- Подсказка -->
+
     <section class="instruction-card">
-      
-      <!-- Контурный котик на краю рамки -->
-      <div class="card-cat-box" id="catBox" title="Погладить">
-        <div class="cat-mini-bubble" id="catBubble">Мяу~ 🐾</div>
-        
-        <svg class="cat-outline-svg" viewBox="0 0 76 66" id="catSvg">
-          <!-- Хвостик с мягким покачиванием -->
-          <path class="cat-stroke cat-tail-line" d="M18,52 C11,52 8,43 12,36 C14,33 17,35 16,38 C13,42 15,48 21,48" />
-
-          <!-- Сидящее тело котика -->
-          <path class="cat-stroke" d="M25,32 C18,41 16,52 22,54 L54,54 C59,52 57,41 51,32 Z" />
-
-          <!-- Задние лапки по бокам -->
-          <path class="cat-stroke" d="M19,54 C17,50 21,46 25,48" />
-          <path class="cat-stroke" d="M57,54 C59,50 55,46 51,48" />
-
-          <!-- Голова и ушки -->
-          <path class="cat-stroke" d="
-            M29,19 
-            L24,8 L34,13 
-            C36,12 40,12 42,13 
-            L52,8 L47,19 
-            C54,23 54,32 47,36 
-            C43,38 33,38 29,36 
-            C22,32 22,23 29,19 Z
-          " />
-
-          <!-- Внутренние контуры ушек -->
-          <path class="cat-stroke-thin" d="M27,16 L26,11 L32,14" />
-          <path class="cat-stroke-thin" d="M49,16 L50,11 L44,14" />
-
-          <!-- Левый глаз -->
-          <g>
-            <ellipse class="cat-stroke" cx="33" cy="23" rx="3.5" ry="4" />
-            <circle class="cat-pupil" id="pupilL" cx="33" cy="23" r="1.6" />
-          </g>
-
-          <!-- Правый глаз (прищуривается при умывании) -->
-          <g class="cat-eye-squint">
-            <ellipse class="cat-stroke" cx="43" cy="23" rx="3.5" ry="4" />
-            <circle class="cat-pupil" id="pupilR" cx="43" cy="23" r="1.6" />
-          </g>
-
-          <!-- Носик и милая мордочка :3 -->
-          <path class="cat-stroke-thin" d="M37,27 L39,27 L38,28.2 Z" fill="var(--accent-warm)" />
-          <path class="cat-stroke-thin" d="M35.5,29.5 Q38,31 38,29 Q38,31 40.5,29.5" />
-
-          <!-- Усики -->
-          <path class="cat-stroke-thin" d="M33,28 L23,26 M33,30 L22,31" />
-          <path class="cat-stroke-thin" d="M43,28 L53,26 M43,30 L54,31" />
-
-          <!-- Левая передняя лапка (опирается на край карточки) -->
-          <path class="cat-stroke" d="M31,43 L31,54 C31,55.5 35,55.5 35,54 L35,45" />
-
-          <!-- Правая лапка (умывается) -->
-          <g class="cat-paw-wash">
-            <path class="cat-stroke" d="M41,45 L41,54 C41,55.5 45,55.5 45,54 L45,43 Z" />
-          </g>
-        </svg>
-      </div>
 
       <div class="instruction-title">
+
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
         </svg>
+
         Инструкция
+
       </div>
+
       <ul class="instruction-grid">
+
         <li class="step-item">
+
           <span class="step-pill">1</span>
+
           <span>Убедитесь, что у вас установлено расширение <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a>.</span>
+
         </li>
+
         <li class="step-item">
+
           <span class="step-pill">2</span>
+
           <span>Нажмите кнопку <strong>«Установить / Обновить»</strong> на нужной карточке.</span>
+
         </li>
+
         <li class="step-item">
+
           <span class="step-pill">3</span>
+
           <span>В открывшемся окне подтвердите установку кнопкой <strong>«Установить / Обновить»</strong>.</span>
+
         </li>
+
       </ul>
+
     </section>
+
+
 
     <!-- Поиск -->
+
     <section class="search-section">
+
       <div class="search-box">
+
         <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
+
         </svg>
+
         <input 
+
           type="text" 
+
           id="searchInput" 
+
           class="search-input" 
+
           placeholder="Поиск по названию или сайту..." 
+
           autocomplete="off"
+
         >
+
         <button id="clearBtn" class="btn-clear" title="Очистить">✕</button>
+
       </div>
+
       <div id="counter" class="counter"></div>
+
     </section>
 
+
+
     <!-- Список скриптов -->
+
     <main class="scripts-list" id="scriptsGrid">
 
+
+
       <!-- Карточка вашего скрипта Miele -->
+
       <article class="script-card" data-search="miele-store miele store проверка английских слов перевод карточки товаров">
+
         <div class="card-top">
+
           <h2 class="card-title">1. Miele-Store: Проверка перевода</h2>
+
           <span class="card-badge">miele-store.ru</span>
+
         </div>
+
         <p class="card-desc">Проверка и подсвечивание английских слов и терминов в карточках товаров каталога.</p>
+
         <a class="btn-install" href="./scripts/miele-store-words.user.js">
+
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+
           </svg>
+
           Установить / Обновить
+
         </a>
+
       </article>
+
+
 
     </main>
 
+
+
     <div id="notFound" class="not-found">
+
       <h3>Скрипт не найден</h3>
+
       <p>Попробуйте ввести другое ключевое слово или проверьте раскладку клавиатуры.</p>
+
     </div>
+
+
 
   </div>
 
+
+
   <script>
-    /* 1. Поиск и фильтрация */
+
     const searchInput = document.getElementById('searchInput');
+
     const clearBtn = document.getElementById('clearBtn');
+
     const counter = document.getElementById('counter');
+
     const cards = document.querySelectorAll('#scriptsGrid .script-card');
+
     const notFound = document.getElementById('notFound');
+
     const totalCount = cards.length;
 
+
+
     function handleSearch() {
+
       const query = searchInput.value.trim().toLowerCase();
+
       let matchedCount = 0;
 
+
+
       cards.forEach(card => {
+
         const text = (card.getAttribute('data-search') + ' ' + card.innerText).toLowerCase();
+
         if (!query || text.includes(query)) {
+
           card.style.display = 'flex';
+
           matchedCount++;
+
         } else {
+
           card.style.display = 'none';
+
         }
+
       });
 
+
+
       clearBtn.style.display = query ? 'flex' : 'none';
+
       notFound.style.display = matchedCount === 0 ? 'block' : 'none';
 
+
+
       if (query) {
+
         counter.textContent = `Найдено: ${matchedCount} из ${totalCount}`;
+
       } else {
+
         counter.textContent = `Всего скриптов в каталоге: ${totalCount}`;
+
       }
+
     }
+
+
 
     searchInput.addEventListener('input', handleSearch);
 
+
+
     clearBtn.addEventListener('click', () => {
+
       searchInput.value = '';
+
       searchInput.focus();
+
       handleSearch();
+
     });
+
+
 
     handleSearch();
 
-    /* 2. Взгляд контурного котика на курсор */
-    const catSvg = document.getElementById('catSvg');
-    const pupilL = document.getElementById('pupilL');
-    const pupilR = document.getElementById('pupilR');
-    const catBox = document.getElementById('catBox');
-    const catBubble = document.getElementById('catBubble');
-    let bubbleTimeout = null;
-
-    const meows = ["Мяу~ 🐾", "Мурр... ✨", "(=^･ω･^=)", "Шурш-шурш"];
-
-    window.addEventListener('mousemove', (e) => {
-      if (!catSvg) return;
-      const rect = catSvg.getBoundingClientRect();
-      const headX = rect.left + rect.width * 0.5;
-      const headY = rect.top + rect.height * 0.38;
-
-      const dx = e.clientX - headX;
-      const dy = e.clientY - headY;
-      const angle = Math.atan2(dy, dx);
-      const dist = Math.min(Math.hypot(dx, dy), 350);
-      const offset = (dist / 350) * 1.5;
-
-      const moveX = Math.cos(angle) * offset;
-      const moveY = Math.sin(angle) * offset;
-
-      pupilL.setAttribute('cx', 33 + moveX);
-      pupilL.setAttribute('cy', 23 + moveY);
-      pupilR.setAttribute('cx', 43 + moveX);
-      pupilR.setAttribute('cy', 23 + moveY);
-    });
-
-    // Реакция на клик по котику
-    catBox.addEventListener('click', () => {
-      const phrase = meows[Math.floor(Math.random() * meows.length)];
-      catBubble.textContent = phrase;
-      catBubble.classList.add('show');
-      clearTimeout(bubbleTimeout);
-      bubbleTimeout = setTimeout(() => {
-        catBubble.classList.remove('show');
-      }, 1800);
-    });
   </script>
+
 </body>
+
 </html>
