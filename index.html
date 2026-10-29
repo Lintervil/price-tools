@@ -3,21 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Каталог скриптов для Tampermonkey</title>
+  <title>Price Tools — Каталог скриптов</title>
   <style>
     :root {
-      --bg-color: #f4f6f9;
-      --card-bg: #ffffff;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --border-color: #e5e7eb;
-      --accent-badge: #eff6ff;
-      --accent-badge-text: #1d4ed8;
-      --radius: 12px;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 6px 16px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+      /* Теплая темная палитра */
+      --bg-main: #191615;
+      --bg-surface: #24201e;
+      --bg-surface-soft: #2d2825;
+      --border-warm: #3d3632;
+      --border-focus: #e09462;
+      
+      /* Текст: сливочный и теплый бежевый */
+      --text-title: #fcf6f0;
+      --text-main: #e8ded4;
+      --text-muted: #ad9f94;
+
+      /* Уютные акцентные цвета */
+      --accent-warm: #e08a55;
+      --accent-warm-hover: #f29a65;
+      --accent-badge-bg: #352a24;
+      --accent-badge-text: #f6b388;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-warm: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
     }
 
     * {
@@ -27,29 +37,42 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-main);
       color: var(--text-main);
-      line-height: 1.5;
-      padding: 32px 16px;
+      line-height: 1.55;
+      padding: 40px 16px 60px;
     }
 
     .container {
-      max-width: 1040px;
+      max-width: 960px;
       margin: 0 auto;
     }
 
-    /* Шапка каталога */
+    /* Шапка сайта */
     header {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       text-align: center;
     }
 
+    .header-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--accent-badge-bg);
+      color: var(--accent-badge-text);
+      border: 1px solid rgba(224, 138, 85, 0.25);
+      margin-bottom: 12px;
+    }
+
     header h1 {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
+      color: var(--text-title);
       margin-bottom: 8px;
-      color: #111827;
+      letter-spacing: -0.02em;
     }
 
     header p {
@@ -57,61 +80,60 @@
       color: var(--text-muted);
     }
 
-    /* Блок инструкции для менеджеров */
+    /* Блок инструкции */
     .instruction-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-left: 5px solid var(--primary);
-      border-radius: var(--radius);
-      padding: 20px 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      padding: 22px 26px;
       margin-bottom: 28px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-warm);
     }
 
-    .instruction-card h2 {
-      font-size: 16px;
+    .instruction-title {
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #374151;
+      color: var(--accent-badge-text);
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .instruction-list {
+    .instruction-grid {
       list-style: none;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
     @media (min-width: 768px) {
-      .instruction-list {
+      .instruction-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
       }
     }
 
-    .instruction-step {
+    .step-item {
       display: flex;
-      align-items: flex-start;
       gap: 12px;
+      align-items: flex-start;
+      background: var(--bg-surface-soft);
+      border: 1px solid var(--border-warm);
+      padding: 14px;
+      border-radius: var(--radius-md);
       font-size: 14px;
-      color: #4b5563;
-      background: #fafafa;
-      padding: 12px 14px;
-      border-radius: 8px;
-      border: 1px solid #f0f0f0;
+      color: var(--text-main);
     }
 
-    .step-number {
-      background: var(--primary);
-      color: #fff;
-      font-size: 12px;
+    .step-pill {
+      background: var(--accent-warm);
+      color: #1a1412;
       font-weight: 700;
-      min-width: 22px;
+      font-size: 12px;
+      width: 22px;
       height: 22px;
       border-radius: 50%;
       display: flex;
@@ -121,23 +143,24 @@
       margin-top: 1px;
     }
 
-    .step-text a {
-      color: var(--primary);
+    .step-item a {
+      color: var(--accent-badge-text);
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
-    /* Панель поиска */
-    .toolbar {
+    /* Поиск */
+    .search-section {
       position: sticky;
       top: 16px;
-      z-index: 10;
+      z-index: 20;
       margin-bottom: 24px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .search-wrapper {
+    .search-box {
       position: relative;
       display: flex;
       align-items: center;
@@ -145,162 +168,161 @@
 
     .search-icon {
       position: absolute;
-      left: 16px;
-      width: 18px;
-      height: 18px;
+      left: 18px;
+      width: 20px;
+      height: 20px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
       width: 100%;
-      padding: 14px 44px 14px 46px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-warm);
+      color: var(--text-title);
       font-size: 15px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
+      padding: 14px 44px 14px 50px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-warm);
       outline: none;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .search-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(224, 138, 85, 0.2);
     }
 
-    .clear-btn {
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn-clear {
       position: absolute;
-      right: 14px;
-      background: #e5e7eb;
+      right: 16px;
+      background: var(--border-warm);
       border: none;
-      border-radius: 50%;
+      color: var(--text-muted);
       width: 22px;
       height: 22px;
-      color: #4b5563;
-      font-size: 12px;
+      border-radius: 50%;
       cursor: pointer;
       display: none;
       align-items: center;
       justify-content: center;
+      font-size: 12px;
     }
 
-    .clear-btn:hover {
-      background: #d1d5db;
+    .btn-clear:hover {
+      background: var(--accent-warm);
+      color: #191615;
     }
 
-    .search-counter {
+    .counter {
       font-size: 13px;
       color: var(--text-muted);
-      padding-left: 4px;
+      padding-left: 6px;
     }
 
     /* Сетка карточек */
-    .scripts-grid {
+    .scripts-list {
       display: grid;
       grid-template-columns: 1fr;
       gap: 18px;
     }
 
     @media (min-width: 680px) {
-      .scripts-grid {
+      .scripts-list {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (min-width: 1000px) {
-      .scripts-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
+    .script-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: var(--shadow-warm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
-    .card:hover {
+    .script-card:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      border-color: rgba(224, 138, 85, 0.5);
     }
 
-    .card-header {
+    .card-top {
       margin-bottom: 12px;
     }
 
     .card-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 600;
-      color: #111827;
-      margin-bottom: 6px;
+      color: var(--text-title);
+      margin-bottom: 8px;
     }
 
-    .card-domain {
+    .card-badge {
       display: inline-flex;
-      align-items: center;
-      background: var(--accent-badge);
-      color: var(--accent-badge-text);
       font-size: 12px;
-      font-weight: 500;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
       padding: 3px 8px;
+      background: var(--accent-badge-bg);
+      color: var(--accent-badge-text);
       border-radius: 6px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      border: 1px solid rgba(224, 138, 85, 0.2);
     }
 
-    .card-description {
+    .card-desc {
       font-size: 14px;
-      color: #4b5563;
-      margin-bottom: 18px;
+      color: var(--text-muted);
+      margin-bottom: 22px;
       flex-grow: 1;
     }
 
     /* Кнопка установки */
-    .install-btn {
+    .btn-install {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      background-color: var(--primary);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 11px 16px;
-      font-size: 14px;
+      gap: 10px;
+      background-color: var(--accent-warm);
+      color: #191615;
       font-weight: 600;
-      border-radius: 8px;
-      transition: background-color 0.15s ease, filter 0.15s ease;
-      text-align: center;
+      font-size: 14px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background-color 0.15s ease, transform 0.1s ease;
     }
 
-    .install-btn:hover {
-      background-color: var(--primary-hover);
+    .btn-install:hover {
+      background-color: var(--accent-warm-hover);
+      transform: translateY(-1px);
     }
 
-    .install-btn svg {
-      width: 16px;
-      height: 16px;
+    .btn-install svg {
+      width: 17px;
+      height: 17px;
     }
 
-    /* Состояние, когда ничего не найдено */
-    .empty-state {
+    /* Пустое состояние */
+    .not-found {
       display: none;
       text-align: center;
-      padding: 48px 16px;
-      background: var(--card-bg);
-      border: 1px dashed var(--border-color);
-      border-radius: var(--radius);
+      padding: 40px 20px;
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-warm);
+      border-radius: var(--radius-lg);
       color: var(--text-muted);
     }
 
-    .empty-state h3 {
+    .not-found h3 {
       font-size: 18px;
-      color: var(--text-main);
+      color: var(--text-title);
       margin-bottom: 6px;
     }
   </style>
@@ -309,39 +331,39 @@
 
   <div class="container">
     
-    <!-- Заголовок -->
     <header>
+      <span class="header-badge">Price Tools Hub</span>
       <h1>Каталог рабочих скриптов</h1>
-      <p>Центр быстрой установки и обновления расширений для Tampermonkey</p>
+      <p>Установка и быстрое обновление расширений для Tampermonkey</p>
     </header>
 
-    <!-- Блок-памятка для менеджеров -->
+    <!-- Подсказка -->
     <section class="instruction-card">
-      <h2>
+      <div class="instruction-title">
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        Как установить или обновить скрипт:
-      </h2>
-      <ul class="instruction-list">
-        <li class="instruction-step">
-          <span class="step-number">1</span>
-          <span class="step-text">Убедитесь, что у вас установлено расширение <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a>.</span>
+        Инструкция для менеджеров
+      </div>
+      <ul class="instruction-grid">
+        <li class="step-item">
+          <span class="step-pill">1</span>
+          <span>Убедитесь, что у вас установлено расширение <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a>.</span>
         </li>
-        <li class="instruction-step">
-          <span class="step-number">2</span>
-          <span class="step-text">Нажмите кнопку <strong>«Установить / Обновить»</strong> напротив нужного сайта.</span>
+        <li class="step-item">
+          <span class="step-pill">2</span>
+          <span>Нажмите кнопку <strong>«Установить / Обновить»</strong> на нужной карточке.</span>
         </li>
-        <li class="instruction-step">
-          <span class="step-number">3</span>
-          <span class="step-text">В открывшемся окне Tampermonkey нажмите кнопку <strong>«Установить»</strong> или <strong>«Обновить»</strong>.</span>
+        <li class="step-item">
+          <span class="step-pill">3</span>
+          <span>В открывшемся окне подтвердите установку кнопкой <strong>«Установить»</strong>.</span>
         </li>
       </ul>
     </section>
 
-    <!-- Поиск и фильтрация -->
-    <section class="toolbar">
-      <div class="search-wrapper">
+    <!-- Поиск -->
+    <section class="search-section">
+      <div class="search-box">
         <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
         </svg>
@@ -349,85 +371,25 @@
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="Поиск по названию сервиса, домену или описанию..." 
+          placeholder="Поиск по названию или сайту..." 
           autocomplete="off"
         >
-        <button id="clearBtn" class="clear-btn" title="Очистить" aria-label="Очистить поиск">✕</button>
+        <button id="clearBtn" class="btn-clear" title="Очистить">✕</button>
       </div>
-      <div id="searchCounter" class="search-counter"></div>
+      <div id="counter" class="counter"></div>
     </section>
 
-    <!-- Список карточек -->
-    <main class="scripts-grid" id="scriptsGrid">
+    <!-- Список скриптов -->
+    <main class="scripts-list" id="scriptsGrid">
 
-      <!-- Карточка 1 -->
-      <article class="card" data-search="1. CRM Система crm.company.com автозаполнение данных карточки клиентов быстрые кнопки">
-        <div class="card-header">
-          <h3 class="card-title">1. CRM Система</h3>
-          <span class="card-domain">crm.company.com</span>
+      <!-- Карточка вашего скрипта Miele -->
+      <article class="script-card" data-search="miele-store miele store проверка английских слов перевод карточки товаров">
+        <div class="card-top">
+          <h2 class="card-title">1. Miele-Store: Проверка слов</h2>
+          <span class="card-badge">miele-store.ru</span>
         </div>
-        <p class="card-description">Автозаполнение форм контактов, быстрая вставка шаблонов и автоматический расчёт скидок в сделках.</p>
-        <a class="install-btn" href="./scripts/crm.user.js">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
-      </article>
-
-      <!-- Карточка 2 -->
-      <article class="card" data-search="2. Поставщик Альфа alpha-trade.ru экспорт цен опт сравнение остатков">
-        <div class="card-header">
-          <h3 class="card-title">2. Поставщик Альфа</h3>
-          <span class="card-domain">alpha-trade.ru</span>
-        </div>
-        <p class="card-description">Выгрузка прайс-листов в Excel в один клик и подсветка позиций с минимальным складским остатком.</p>
-        <a class="install-btn" href="./scripts/supplier-alpha.user.js">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
-      </article>
-
-      <!-- Карточка 3 -->
-      <article class="card" data-search="3. Отчёты и BI аналитика bi.company.local фильтры графики автообновление дашборда">
-        <div class="card-header">
-          <h3 class="card-title">3. Аналитика и BI</h3>
-          <span class="card-domain">bi.company.local</span>
-        </div>
-        <p class="card-description">Фиксация шапки сводных таблиц, автосохранение фильтров и скрытие неактивных филиалов.</p>
-        <a class="install-btn" href="./scripts/bi-analytics.user.js">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
-      </article>
-
-      <!-- Карточка 4 -->
-      <article class="card" data-search="4. Служба Доставки delivery-service.ru трекинг накладные печать штрихкодов">
-        <div class="card-header">
-          <h3 class="card-title">4. Служба Доставки</h3>
-          <span class="card-domain">delivery-service.ru</span>
-        </div>
-        <p class="card-description">Быстрое копирование трек-номеров и пакетная печать этикеток со штрихкодами без открытия лишних окон.</p>
-        <a class="install-btn" href="./scripts/delivery-helper.user.js">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
-      </article>
-
-      <!-- Карточка 5 -->
-      <article class="card" data-search="5. Поставщик Бета beta-b2b.com сверка счетов ндс автоматическая валидация">
-        <div class="card-header">
-          <h3 class="card-title">5. Поставщик Бета</h3>
-          <span class="card-domain">beta-b2b.com</span>
-        </div>
-        <p class="card-description">Автоматическая проверка корректности реквизитов и сумм НДС перед подтверждением заказа.</p>
-        <a class="install-btn" href="./scripts/supplier-beta.user.js">
+        <p class="card-desc">Проверка и подсвечивание английских слов и терминов в карточках товаров каталога.</p>
+        <a class="btn-install" href="./scripts/miele-store-words.user.js">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
           </svg>
@@ -437,63 +399,54 @@
 
     </main>
 
-    <!-- Блок отсутствия результатов -->
-    <div id="emptyState" class="empty-state">
-      <h3>Ничего не найдено</h3>
-      <p>Попробуйте изменить поисковый запрос или проверьте написание домена.</p>
+    <div id="notFound" class="not-found">
+      <h3>Скрипт не найден</h3>
+      <p>Попробуйте ввести другое ключевое слово или проверьте раскладку клавиатуры.</p>
     </div>
 
   </div>
 
-  <!-- Скрипт живого поиска -->
   <script>
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearBtn');
-    const counter = document.getElementById('searchCounter');
-    const cards = document.querySelectorAll('#scriptsGrid .card');
-    const emptyState = document.getElementById('emptyState');
-    const totalCards = cards.length;
+    const counter = document.getElementById('counter');
+    const cards = document.querySelectorAll('#scriptsGrid .script-card');
+    const notFound = document.getElementById('notFound');
+    const totalCount = cards.length;
 
-    function filterCards() {
+    function handleSearch() {
       const query = searchInput.value.trim().toLowerCase();
-      let visibleCount = 0;
+      let matchedCount = 0;
 
       cards.forEach(card => {
-        // Ищем по data-search (или полному тексту карточки)
-        const searchableText = (card.getAttribute('data-search') || card.innerText).toLowerCase();
-        
-        if (!query || searchableText.includes(query)) {
+        const text = (card.getAttribute('data-search') + ' ' + card.innerText).toLowerCase();
+        if (!query || text.includes(query)) {
           card.style.display = 'flex';
-          visibleCount++;
+          matchedCount++;
         } else {
           card.style.display = 'none';
         }
       });
 
-      // Переключатель кнопки очистки
       clearBtn.style.display = query ? 'flex' : 'none';
+      notFound.style.display = matchedCount === 0 ? 'block' : 'none';
 
-      // Обновление счетчика
       if (query) {
-        counter.textContent = `Найдено: ${visibleCount} из ${totalCards}`;
+        counter.textContent = `Найдено: ${matchedCount} из ${totalCount}`;
       } else {
-        counter.textContent = `Всего скриптов в каталоге: ${totalCards}`;
+        counter.textContent = `Всего скриптов в каталоге: ${totalCount}`;
       }
-
-      // Если ничего не подошло
-      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
     }
 
-    searchInput.addEventListener('input', filterCards);
+    searchInput.addEventListener('input', handleSearch);
 
     clearBtn.addEventListener('click', () => {
       searchInput.value = '';
       searchInput.focus();
-      filterCards();
+      handleSearch();
     });
 
-    // Инициализация счетчика при старте
-    filterCards();
+    handleSearch();
   </script>
 </body>
 </html>
