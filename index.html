@@ -80,7 +80,7 @@
       color: var(--text-muted);
     }
 
-    /* Блок инструкции */
+    /* Блок инструкции для установки */
     .instruction-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-warm);
@@ -279,21 +279,27 @@
     .card-desc {
       font-size: 14px;
       color: var(--text-muted);
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       flex-grow: 1;
     }
 
-    /* Кнопка установки */
+    /* Блок кнопок на карточке */
+    .card-buttons {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
     .btn-install {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       background-color: var(--accent-warm);
       color: #191615;
       font-weight: 600;
       font-size: 14px;
-      padding: 12px 18px;
+      padding: 11px 16px;
       border-radius: 10px;
       text-decoration: none;
       transition: background-color 0.15s ease, transform 0.1s ease;
@@ -307,6 +313,36 @@
     .btn-install svg {
       width: 17px;
       height: 17px;
+    }
+
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--bg-surface-soft);
+      color: var(--text-title);
+      border: 1px solid var(--border-warm);
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-guide:hover {
+      background: var(--border-warm);
+      border-color: var(--accent-warm);
+      color: var(--accent-badge-text);
+      transform: translateY(-1px);
+    }
+
+    .btn-guide svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent-warm);
     }
 
     /* Пустое состояние */
@@ -324,6 +360,203 @@
       font-size: 18px;
       color: var(--text-title);
       margin-bottom: 6px;
+    }
+
+    /* =========================================
+       МОДАЛЬНОЕ ОКНО С ИНСТРУКЦИЕЙ
+    ========================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 7, 0.78);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+      transform: translateY(14px) scale(0.97);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 22px 24px 16px;
+      border-bottom: 1px solid var(--border-warm);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header-info {
+      flex: 1;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 6px;
+    }
+
+    .modal-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      padding: 2px 8px;
+      background: var(--accent-badge-bg);
+      color: var(--accent-badge-text);
+      border-radius: 6px;
+      border: 1px solid rgba(224, 138, 85, 0.25);
+    }
+
+    .modal-close-btn {
+      background: var(--bg-surface-soft);
+      border: 1px solid var(--border-warm);
+      color: var(--text-muted);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--border-warm);
+      color: var(--text-title);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .guide-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-badge-text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-desc {
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .guide-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--bg-surface-soft);
+      border: 1px solid var(--border-warm);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      line-height: 1.5;
+    }
+
+    .guide-step-num {
+      background: var(--accent-warm);
+      color: #191615;
+      font-weight: 700;
+      font-size: 11px;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .guide-tips {
+      background: rgba(224, 138, 85, 0.08);
+      border: 1px solid rgba(224, 138, 85, 0.25);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--accent-badge-text);
+      line-height: 1.5;
+    }
+
+    .guide-tips strong {
+      color: var(--text-title);
+    }
+
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--bg-surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-soft);
+      border: 1px solid var(--border-warm);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-warm);
+      color: var(--text-title);
     }
   </style>
 </head>
@@ -343,7 +576,7 @@
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        Инструкция
+        Инструкция по установке
       </div>
       <ul class="instruction-grid">
         <li class="step-item">
@@ -389,12 +622,20 @@
           <span class="card-badge">miele-store.ru</span>
         </div>
         <p class="card-desc">Проверка и подсвечивание английских слов и терминов в карточках товаров каталога.</p>
-        <a class="btn-install" href="./scripts/miele-store-words.user.js" target="_blank" rel="noopener">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/miele-store-words.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="miele-words">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
       </article>
 
       <!-- Карточка 2: Asko -->
@@ -404,12 +645,20 @@
           <span class="card-badge">asko-russia.ru</span>
         </div>
         <p class="card-desc">Проверка и подсвечивание английских слов и терминов на сайте.</p>
-        <a class="btn-install" href="./scripts/asko-russia-words.user.js" target="_blank" rel="noopener">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/asko-russia-words.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="asko-words">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
       </article>
 
       <!-- Карточка 3: QA Аудит инструкций -->
@@ -419,12 +668,20 @@
           <span class="card-badge">27 сайтов (Korting, Bosch, Miele...)</span>
         </div>
         <p class="card-desc">Автоматический аудит вывода инструкций, категорий, пагинации, мобильных заглушек и проверка снятых с производства товаров со сводной таблицей и CSV.</p>
-        <a class="btn-install" href="./scripts/instruction-audit.user.js" target="_blank" rel="noopener">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/instruction-audit.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="instruction-audit">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
       </article>
 
       <!-- Карточка 4: Maunfeld Сверка характеристик -->
@@ -434,12 +691,20 @@
           <span class="card-badge">maunfeld-home.ru ↔ maunfeld.ru</span>
         </div>
         <p class="card-desc">Фоновая сверка характеристик товаров каталога с официальным сайтом Maunfeld, подсветка расхождений и быстрый просмотр параметров.</p>
-        <a class="btn-install" href="./scripts/maunfeld-spec-checker.user.js" target="_blank" rel="noopener">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Установить / Обновить
-        </a>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/maunfeld-spec-checker.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="maunfeld-spec">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
       </article>
 
     </main>
@@ -451,7 +716,33 @@
 
   </div>
 
+  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПАМЯТКИ / ИНСТРУКЦИИ -->
+  <div id="guideModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <h3 id="modalTitle" class="modal-title">Инструкция к скрипту</h3>
+          <span id="modalBadge" class="modal-badge">домен</span>
+        </div>
+        <button id="modalCloseBtn" class="modal-close-btn" title="Закрыть (Esc)" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="modal-body" id="modalContent">
+        <!-- Контент наполняется динамически из JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modalCloseFooter" class="btn-secondary">Закрыть</button>
+        <a id="modalInstallBtn" class="btn-install" href="#" target="_blank" rel="noopener">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          Установить этот скрипт
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script>
+    /* 1. Поиск и фильтрация */
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearBtn');
     const counter = document.getElementById('counter');
@@ -492,6 +783,149 @@
     });
 
     handleSearch();
+
+    /* =========================================
+       2. БАЗА ИНСТРУКЦИЙ ДЛЯ ПОПАПА
+    ========================================= */
+    const scriptGuides = {
+      'miele-words': {
+        title: 'Miele-Store: Проверка перевода',
+        badge: 'miele-store.ru',
+        scriptUrl: './scripts/miele-store-words.user.js',
+        purpose: 'Скрипт проверяет карточки товаров каталога Miele на наличие непереведенных английских слов и терминов, которые могли случайно остаться при заполнении контента.',
+        steps: [
+          'Откройте любую карточку товара в каталоге на сайте <strong>miele-store.ru</strong>.',
+          'Скрипт автоматически просканирует блок характеристик, описание и название.',
+          'Все найденные англоязычные слова подсвечиваются ярким цветовым маркером.',
+          'Если слово должно быть переведено — скопируйте его и поправьте значение в административной панели сайта.'
+        ],
+        tip: '<strong>Подсказка:</strong> скрипт игнорирует стандартные обозначения моделей и единицы измерения, обращая внимание только на текст описания и названий свойств.'
+      },
+
+      'asko-words': {
+        title: 'Asko-Russia: Проверка перевода',
+        badge: 'asko-russia.ru',
+        scriptUrl: './scripts/asko-russia-words.user.js',
+        purpose: 'Инструмент для контроля качества контента на сайте Asko. Подсвечивает оставшиеся англоязычные фразы и технические термины в карточках товаров.',
+        steps: [
+          'Перейдите на сайт <strong>asko-russia.ru</strong> в любую карточку бытовой техники.',
+          'После загрузки страницы скрипт автоматически выделит латинские слова и непереведённые названия параметров.',
+          'Просмотрите спецификацию: подсвеченные элементы требуют проверки или перевода на русский язык.'
+        ],
+        tip: '<strong>Совет:</strong> используйте скрипт при пакетной приёмке новых карточек или обновлении линеек приборов.'
+      },
+
+      'instruction-audit': {
+        title: 'QA: Проверка инструкций на сайтах',
+        badge: '27 сайтов (Korting, Bosch, Miele, Neff, Siemens...)',
+        scriptUrl: './scripts/instruction-audit.user.js',
+        purpose: 'Комплексный автоматический аудит вывода пользовательских инструкций (PDF/DOC), категорий, пагинации, мобильных заглушек и проверка привязки документов к снятым с производства товарам.',
+        steps: [
+          'Откройте раздел документации <code>/technical-documentation/</code> или каталог на любом из 27 поддерживаемых сайтов.',
+          'В правом нижнем углу появится плавающее окно <strong>«QA инструкций»</strong> с первыми автоматическими проверками.',
+          'Нажмите <strong>«Проверить товары из инструкций»</strong>: скрипт в фоне проверит статусы товаров (в наличии, снят с производства, нет в продаже) партиями по 8 штук.',
+          'Нажмите <strong>«Общая таблица»</strong>, чтобы увидеть сводную матрицу по всем сайтам сети и сохранить её в <strong>CSV для Excel</strong>.'
+        ],
+        tip: '<strong>Важно:</strong> статус проверок и заметки сохраняются в локальном хранилище браузера и не стираются при переходе между сайтами.'
+      },
+
+      'maunfeld-spec': {
+        title: 'Maunfeld: Сверка характеристик (home ↔ official)',
+        badge: 'maunfeld-home.ru ↔ maunfeld.ru',
+        scriptUrl: './scripts/maunfeld-spec-checker.user.js',
+        purpose: 'Скрипт сверяет характеристики товаров на <strong>maunfeld-home.ru</strong> с официальным сайтом <strong>maunfeld.ru</strong> в реальном времени через фоновые запросы к API и HTML.',
+        steps: [
+          'Откройте любую карточку товара или страницу сравнения на сайте <strong>maunfeld-home.ru</strong>.',
+          'В правом нижнем углу появится кнопка <strong>«Сверка»</strong>. Нажмите её, чтобы открыть панель и запустить фоновую проверку.',
+          'Зелёным маркером подсвечиваются совпавшие параметры, красным — найденные расхождения (размеры, мощность, вес, климатический класс).',
+          'Нажмите кнопку <strong>«оф. сайт»</strong> напротив любого свойства, чтобы увидеть правильное значение с официального сайта и скопировать его в буфер в один клик.'
+        ],
+        tip: '<strong>Полезно:</strong> скрипт автоматически переводит миллиметры в сантиметры для габаритов и игнорирует различия в знаках препинания (например, дефисы и запятые в климатических классах).'
+      }
+    };
+
+    /* =========================================
+       3. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ
+    ========================================= */
+    const modal = document.getElementById('guideModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBadge = document.getElementById('modalBadge');
+    const modalContent = document.getElementById('modalContent');
+    const modalInstallBtn = document.getElementById('modalInstallBtn');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCloseFooter = document.getElementById('modalCloseFooter');
+
+    function openModal(guideId) {
+      const data = scriptGuides[guideId];
+      if (!data) return;
+
+      modalTitle.textContent = data.title;
+      modalBadge.textContent = data.badge;
+      modalInstallBtn.href = data.scriptUrl;
+
+      // Формируем контент
+      const stepsHtml = data.steps.map((step, idx) => `
+        <li class="guide-step">
+          <span class="guide-step-num">${idx + 1}</span>
+          <span>${step}</span>
+        </li>
+      `).join('');
+
+      modalContent.innerHTML = `
+        <div>
+          <div class="guide-section-title">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Для чего этот скрипт
+          </div>
+          <p class="guide-desc">${data.purpose}</p>
+        </div>
+
+        <div>
+          <div class="guide-section-title">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            Как пользоваться (пошагово)
+          </div>
+          <ol class="guide-steps">${stepsHtml}</ol>
+        </div>
+
+        ${data.tip ? `<div class="guide-tips">${data.tip}</div>` : ''}
+      `;
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // блокируем прокрутку под попапом
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Слушатели открытия
+    document.querySelectorAll('[data-guide-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        openModal(btn.getAttribute('data-guide-id'));
+      });
+    });
+
+    // Слушатели закрытия
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalCloseFooter.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
