@@ -776,6 +776,29 @@
         </div>
       </article>
 
+      <!-- Карточка 8: Kuppersberg Сверка характеристик -->
+      <article class="script-card" data-search="kuppersberg kuppers-russia kuppersberg.ru купперсберг сверка характеристик сравнение параметров спецификации official spec checker вытяжки духовые шкафы">
+        <div class="card-top">
+          <h2 class="card-title">8. Kuppersberg: Сверка характеристик</h2>
+          <span class="card-badge">kuppers-russia.ru ↔ kuppersberg.ru</span>
+        </div>
+        <p class="card-desc">Фоновая сверка параметров на kuppers-russia.ru с официальным сайтом kuppersberg.ru. Исправлен поиск вытяжек (F 603 W, INLINEA), поддержка авто-захвата для JS-карточек.</p>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/kuppersberg-spec-checker.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="kuppersberg-spec">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
+      </article>
+
     </main>
 
     <div id="notFound" class="not-found">
@@ -946,7 +969,7 @@
         title: 'Битрикс: Английские слова в обзорах (v1.8.3)',
         badge: 'Панель управления 1С-Битрикс',
         scriptUrl: './scripts/bitrix-foreign-words.user.js',
-        purpose: 'Скрипт проверяет тексты элементов инфоблоков (обзоры, статьи, анонсы) в административной панели 1С-Битрикс на наличие непереведенных английских слов. Автоматически пропускает скобки () и [], исключает технические теги и бренды, формирует отчеты с подсветкой в HTML и Excel/XLSX.',
+        purpose: 'Скрипт проверяет тексты элементов инфоблоков (обзоры, статьи, анонсы) в административной панели 1С-Битрикс на наличие непереведенных английских слов. Автоматически пропускает скобки () и [], исключает технические теги и бренды, формирует отчеты с подсветкой в HTML и Excel/XLSX[cite: 4].',
         steps: [
           'Откройте список элементов инфоблока (обзоры, статьи или новости) в админке Битрикса (страницы <code>iblock_element_admin.php</code> или <code>iblock_list_admin.php</code>)[cite: 4].',
           'В правом нижнем углу появится панель <strong>«Битрикс: английские слова»</strong>[cite: 4].',
@@ -955,6 +978,21 @@
           'Выгрузите готовый отчет кнопкой <strong>«Скачать HTML с подсветкой»</strong> или <strong>«Скачать XLSX»</strong>[cite: 4].'
         ],
         tip: '<strong>Полезно:</strong> популярные бренды и служебный HTML-код уже добавлены в стандартные исключения[cite: 4]. Слова внутри скобок <code>(...)</code> и <code>[...]</code> скрипт намеренно игнорирует[cite: 4].'
+      },
+
+      'kuppersberg-spec': {
+        title: 'Kuppersberg: Сверка характеристик (v1.7.4)',
+        badge: 'kuppers-russia.ru ↔ kuppersberg.ru',
+        scriptUrl: './scripts/kuppersberg-spec-checker.user.js',
+        purpose: 'Сверка спецификаций товаров на kuppers-russia.ru с официальным сайтом kuppersberg.ru[cite: 5]. Распознает сложные артикулы вытяжек (F 603 W, INLINEA 52 Inox) и умеет захватывать данные из карточек с динамическим JS-рендером[cite: 5].',
+        steps: [
+          'Перейдите в карточку товара (<code>/catalog/</code>) или на страницу сравнения (<code>/compare/</code>) на сайте <strong>kuppers-russia.ru</strong>[cite: 5].',
+          'В правом нижнем углу появится виджет <strong>«Сверка»</strong>[cite: 5]. Нажмите его, чтобы запустить поиск карточки на официальном сайте[cite: 5].',
+          'Зеленые маркеры (✔️) укажут на совпадение, красные (❌) — на ошибку в значении, желтые (⚠️) — на расхождения в списках комплектации[cite: 5].',
+          'Нажмите кнопку <strong>«оф. сайт»</strong> рядом со строкой свойства, чтобы увидеть официальное значение и скопировать его в буфер обмена[cite: 5].',
+          'Если карточка на официальном сайте подгружается динамически через JS — нажмите кнопку <strong>«Авто-захват»</strong>, скрипт считает данные через служебное окно и сохранит их в кэш[cite: 5].'
+        ],
+        tip: '<strong>Особенность:</strong> скрипт автоматически приводит габариты ниш и приборов из миллиметров в сантиметры, игнорирует другие бренды (Kuppersbusch, Asko) и умеет сопоставлять комплектацию по отдельным элементам[cite: 5].'
       }
     };
 
