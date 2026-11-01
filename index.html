@@ -707,6 +707,29 @@
         </div>
       </article>
 
+      <!-- Карточка 5: Gorenje Сверка сравнения -->
+      <article class="script-card" data-search="gorenje gorenje-ru ru.gorenje.com горенье сверка характеристик сравнение параметров official spec checker">
+        <div class="card-top">
+          <h2 class="card-title">5. Gorenje: Сверка характеристик</h2>
+          <span class="card-badge">gorenje-ru.ru ↔ ru.gorenje.com</span>
+        </div>
+        <p class="card-desc">Сверка параметров в карточках и на страницах сравнения с официальным сайтом Gorenje, поиск скрытых параметров в текстах преимуществ и валидация габаритов.</p>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/gorenje-spec-checker.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="gorenje-spec">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
+      </article>
+
     </main>
 
     <div id="notFound" class="not-found">
@@ -841,6 +864,21 @@
           'Нажмите кнопку <strong>«оф. сайт»</strong> напротив любого свойства, чтобы увидеть правильное значение с официального сайта и скопировать его в буфер в один клик.'
         ],
         tip: '<strong>Полезно:</strong> скрипт автоматически переводит миллиметры в сантиметры для габаритов и игнорирует различия в знаках препинания (например, дефисы и запятые в климатических классах).'
+      },
+
+      'gorenje-spec': {
+        title: 'Gorenje: Сверка характеристик (v1.8.8)',
+        badge: 'gorenje-ru.ru ↔ ru.gorenje.com',
+        scriptUrl: './scripts/gorenje-spec-checker.user.js',
+        purpose: 'Автоматическая сверка параметров товаров в карточках каталога и на страницах сравнения Gorenje с официальным сайтом ru.gorenje.com. Умеет искать характеристики даже внутри текстов преимуществ и слайдеров.',
+        steps: [
+          'Откройте страницу сравнения (<code>/compare/</code>) или карточку товара (<code>/catalog/*.html</code>) на сайте <strong>gorenje-ru.ru</strong>.',
+          'Скрипт автоматически запустит анализ. Вверху справа появится виджет <strong>«Расширенная проверка»</strong> со статусом и счетчиком ошибок.',
+          'В таблице строки с расхождениями подсветятся красным цветом (❌), предупреждения — желтым (⚠️), совпавшие данные — зеленым (✅).',
+          'Нажмите на иконку <strong>ℹ</strong> рядом со значением, чтобы открыть окно с официальными данными и кнопкой копирования.',
+          'Нажмите на стрелочку <strong>↗</strong>, чтобы открыть карточку на официальном сайте с автоматической прокруткой прямо к нужному параметру.'
+        ],
+        tip: '<strong>Особенность:</strong> скрипт самостоятельно проверяет формат габаритов (наличие точек вместо запятых и буквы «х»), сверяет количество стекол/термослоев и распознает параметры, описанные в тексте преимуществ (например, режимы ECO или функции пара).'
       }
     };
 
@@ -863,7 +901,6 @@
       modalBadge.textContent = data.badge;
       modalInstallBtn.href = data.scriptUrl;
 
-      // Формируем контент
       const stepsHtml = data.steps.map((step, idx) => `
         <li class="guide-step">
           <span class="guide-step-num">${idx + 1}</span>
@@ -897,7 +934,7 @@
 
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden'; // блокируем прокрутку под попапом
+      document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
@@ -906,14 +943,12 @@
       document.body.style.overflow = '';
     }
 
-    // Слушатели открытия
     document.querySelectorAll('[data-guide-id]').forEach(btn => {
       btn.addEventListener('click', () => {
         openModal(btn.getAttribute('data-guide-id'));
       });
     });
 
-    // Слушатели закрытия
     modalCloseBtn.addEventListener('click', closeModal);
     modalCloseFooter.addEventListener('click', closeModal);
 
