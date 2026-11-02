@@ -616,12 +616,12 @@
     <main class="scripts-list" id="scriptsGrid">
 
       <!-- Карточка 1: Miele -->
-      <article class="script-card" data-search="miele-store miele store проверка английских слов перевод карточки товаров">
+      <article class="script-card" data-search="miele-store miele store проверка английских слов перевод карточки товаров массовая проверка каталога обзоры">
         <div class="card-top">
           <h2 class="card-title">1. Miele-Store: Проверка перевода</h2>
           <span class="card-badge">miele-store.ru</span>
         </div>
-        <p class="card-desc">Проверка и подсвечивание английских слов и терминов в карточках товаров каталога.</p>
+        <p class="card-desc">Поиск непереведенных английских слов в карточках и массовая проверка каталога. Сканирование описания, характеристик, обзоров и экспорт в CSV[cite: 6].</p>
         <div class="card-buttons">
           <a class="btn-install" href="./scripts/miele-store-words.user.js" target="_blank" rel="noopener">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -759,7 +759,7 @@
           <h2 class="card-title">7. Битрикс: Английские слова в обзорах</h2>
           <span class="card-badge">Панель управления 1С-Битрикс</span>
         </div>
-        <p class="card-desc">Поиск непереведенных английских слов в обзорах, статьях и каталоге Битрикса. Авто-пропуск скобок, умные исключения и экспорт в Excel/HTML.</p>
+        <p class="card-desc">Поиск непереведенных английских слов в обзорах, статьях и каталоге Битрикса. Авто-пропуск скобок, умные исключения и экспорт в Excel/HTML[cite: 4].</p>
         <div class="card-buttons">
           <a class="btn-install" href="./scripts/bitrix-foreign-words.user.js" target="_blank" rel="noopener">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -782,7 +782,7 @@
           <h2 class="card-title">8. Kuppersberg: Сверка характеристик</h2>
           <span class="card-badge">kuppers-russia.ru ↔ kuppersberg.ru</span>
         </div>
-        <p class="card-desc">Фоновая сверка параметров на kuppers-russia.ru с официальным сайтом kuppersberg.ru. Исправлен поиск вытяжек (F 603 W, INLINEA), поддержка авто-захвата для JS-карточек.</p>
+        <p class="card-desc">Фоновая сверка параметров на kuppers-russia.ru с официальным сайтом kuppersberg.ru. Исправлен поиск вытяжек (F 603 W, INLINEA), поддержка авто-захвата для JS-карточек[cite: 5].</p>
         <div class="card-buttons">
           <a class="btn-install" href="./scripts/kuppersberg-spec-checker.user.js" target="_blank" rel="noopener">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -791,6 +791,29 @@
             Установить / Обновить
           </a>
           <button type="button" class="btn-guide" data-guide-id="kuppersberg-spec">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Инструкция
+          </button>
+        </div>
+      </article>
+
+      <!-- Карточка 9: Kaiser Сверка характеристик -->
+      <article class="script-card" data-search="kaiser kaiser-store kaiser.ru kaiser-olan.de кайзер сверка характеристик сравнение параметров спецификации official spec checker немецкий сайт ru de">
+        <div class="card-top">
+          <h2 class="card-title">9. Kaiser: Сверка характеристик</h2>
+          <span class="card-badge">kaiser-store.ru ↔ kaiser.ru & de</span>
+        </div>
+        <p class="card-desc">Глубокая смысловая сверка характеристик kaiser-store.ru одновременно с kaiser.ru и немецким kaiser-olan.de. Поддержка ручного ввода URL и проверка таблицы сравнения.</p>
+        <div class="card-buttons">
+          <a class="btn-install" href="./scripts/kaiser-spec-checker.user.js" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Установить / Обновить
+          </a>
+          <button type="button" class="btn-guide" data-guide-id="kaiser-spec">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
             </svg>
@@ -881,17 +904,17 @@
     ========================================= */
     const scriptGuides = {
       'miele-words': {
-        title: 'Miele-Store: Проверка перевода',
+        title: 'Miele-Store: Проверка перевода (v0.10)',
         badge: 'miele-store.ru',
         scriptUrl: './scripts/miele-store-words.user.js',
-        purpose: 'Скрипт проверяет карточки товаров каталога Miele на наличие непереведенных английских слов и терминов, которые могли случайно остаться при заполнении контента.',
+        purpose: 'Скрипт проверяет карточки товаров каталога Miele на наличие непереведенных английских слов и терминов, которые могли случайно остаться при заполнении контента[cite: 6]. Поддерживает массовую проверку целых каталогов, обход пагинации и экспорт в CSV[cite: 6].',
         steps: [
-          'Откройте любую карточку товара в каталоге на сайте <strong>miele-store.ru</strong>.',
-          'Скрипт автоматически просканирует блок характеристик, описание и название.',
-          'Все найденные англоязычные слова подсвечиваются ярким цветовым маркером.',
-          'Если слово должно быть переведено — скопируйте его и поправьте значение в административной панели сайта.'
+          'Откройте любую карточку товара или раздел каталога на сайте <strong>miele-store.ru</strong>[cite: 6].',
+          'Скрипт автоматически просканирует блок характеристик, описание и название[cite: 6].',
+          'Все найденные англоязычные слова подсвечиваются ярким цветовым маркером[cite: 6].',
+          'Внизу страницы или через панель можно запустить массовую проверку всех карточек выбранного каталога и выгрузить итоговый отчёт в CSV для Excel[cite: 6].'
         ],
-        tip: '<strong>Подсказка:</strong> скрипт игнорирует стандартные обозначения моделей и единицы измерения, обращая внимание только на текст описания и названий свойств.'
+        tip: '<strong>Подсказка:</strong> скрипт игнорирует стандартные обозначения моделей, единицы измерения и слова в скобках, а также позволяет добавлять исключения прямо через панель[cite: 6].'
       },
 
       'asko-words': {
@@ -993,6 +1016,21 @@
           'Если карточка на официальном сайте подгружается динамически через JS — нажмите кнопку <strong>«Авто-захват»</strong>, скрипт считает данные через служебное окно и сохранит их в кэш[cite: 5].'
         ],
         tip: '<strong>Особенность:</strong> скрипт автоматически приводит габариты ниш и приборов из миллиметров в сантиметры, игнорирует другие бренды (Kuppersbusch, Asko) и умеет сопоставлять комплектацию по отдельным элементам[cite: 5].'
+      },
+
+      'kaiser-spec': {
+        title: 'Kaiser: Сверка характеристик (v2.1.3)',
+        badge: 'kaiser-store.ru ↔ kaiser.ru & kaiser-olan.de',
+        scriptUrl: './scripts/kaiser-spec-checker.user.js',
+        purpose: 'Скрипт выполняет глубокую смысловую сверку характеристик техники на kaiser-store.ru одновременно с двумя официальными сайтами: российским kaiser.ru и немецким kaiser-olan.de. Работает как в карточке товара, так и на странице сравнения (/compare/).',
+        steps: [
+          'Откройте любую карточку товара или страницу сравнения (<code>/compare/</code>) на сайте <strong>kaiser-store.ru</strong>.',
+          'В правом нижнем углу появится плавающая кнопка <strong>«🔍 Сверка Kaiser»</strong>. Скрипт автоматически запустит параллельный опрос kaiser.ru и kaiser-olan.de.',
+          'Строки подсветятся цветом: зелёный (✔️) — совпадение, жёлтый (⚠️) — частичное совпадение/есть на одном из сайтов, красный (❌) — расхождение.',
+          'Нажмите кнопку <strong>«оф. сайты»</strong> напротив любого параметра, чтобы открыть окно с точными значениями с обоих официальных сайтов и скопировать нужное в буфер обмена.',
+          'Если kaiser.ru заблокировал автоматический поиск или показал капчу — нажмите <strong>«✏️ Задать URL»</strong> и вставьте прямую ссылку на товар вручную, скрипт мгновенно считает данные.'
+        ],
+        tip: '<strong>Особенность:</strong> скрипт понимает немецкие технические термины (breite, tiefe, edelstahl, gusseisen), сопоставляет габариты приборов и ниш с учётом перевода миллиметров в сантиметры, а также на лету проверяет диапазоны мощностей конфорок.'
       }
     };
 
